@@ -1,0 +1,64 @@
+Year,Fuel Type,Transportation,Electricity Generation,Residential,Commercial,Industrial,Total CO2 Emissions,Percent of Total CO2 Emissions
+2016,Jet Fuel,10.19,N/A,N/A,N/A,N/A,10.19,6.1
+2016,Residual Oil,2.34,0.29,N/A,0.15,0.22,3,1.8
+2016,Diesel Fuel (Distillate),12.57,N/A,N/A,N/A,N/A,12.57,7.6
+2016,Net Imports of Electricity,N/A,3.8,N/A,N/A,N/A,3.8,2.3
+2016,Other Petroleum,0.4,N/A,1.56,0.51,1.59,4.06,2.4
+2016,Heating Oil (Distillate),N/A,0.15,6.62,3.45,0.8,11.01,6.6
+2016,Coal,N/A,1.45,N/A,N/A,1.82,3.26,2.0
+2016,Gasoline,46.81,N/A,N/A,N/A,N/A,46.81,28.2
+2016,Natural Gas,0.67,25.81,22.49,16.45,5.73,71.15,42.9
+2015,Jet Fuel,9,N/A,N/A,N/A,N/A,9,5.2
+2015,Residual Oil,2.31,0.92,N/A,0.15,0.2,3.58,2.1
+2015,Diesel Fuel (Distillate),12.73,N/A,N/A,N/A,N/A,12.73,7.3
+2015,Net Imports of Electricity,N/A,3.35,N/A,N/A,N/A,3.35,1.9
+2015,Other Petroleum,0.39,N/A,1.57,0.46,1.72,4.14,2.4
+2015,Heating Oil (Distillate),N/A,0.36,9.02,4.11,0.86,14.35,8.3
+2015,Coal,N/A,2.03,N/A,N/A,1.76,3.79,2.2
+2015,Gasoline,48.23,N/A,N/A,N/A,N/A,48.23,27.8
+2015,Natural Gas,0.63,25.78,24.78,17.05,6.17,74.41,42.9
+2014,Jet Fuel,8.32,N/A,N/A,N/A,N/A,8.32,4.7
+2014,Residual Oil,3.67,1.05,N/A,0.4,0.26,5.38,3.0
+2014,Diesel Fuel (Distillate),12.89,N/A,N/A,N/A,N/A,12.89,7.3
+2014,Net Imports of Electricity,N/A,4.18,N/A,N/A,N/A,4.18,2.4
+2014,Other Petroleum,0.36,N/A,1.81,0.44,1.4,4,2.3
+2014,Heating Oil (Distillate),N/A,0.36,8.4,3.6,0.85,13.2,7.5
+2014,Coal,N/A,4.25,N/A,N/A,1.72,5.97,3.4
+2014,Gasoline,48.99,N/A,N/A,N/A,N/A,48.99,27.7
+2014,Natural Gas,0.55,24.73,25.13,17.55,6.13,74.09,41.9
+2013,Jet Fuel,7.84,N/A,N/A,N/A,N/A,7.84,4.5
+2013,Residual Oil,2.97,0.42,N/A,1.48,0.34,5.21,3.0
+2013,Diesel Fuel (Distillate),12.68,N/A,N/A,N/A,N/A,12.68,7.4
+2013,Net Imports of Electricity,N/A,4.59,N/A,N/A,N/A,4.59,2.7
+2013,Other Petroleum,0.34,N/A,1.36,0.41,1.6,3.71,2.2
+2013,Heating Oil (Distillate),N/A,0.21,7.77,3.94,0.97,12.88,7.5
+2013,Coal,N/A,4.36,N/A,N/A,1.97,6.33,3.7
+2013,Gasoline,49.13,N/A,N/A,N/A,N/A,49.13,28.5
+2013,Natural Gas,0.46,24.91,22.86,16.51,5.21,69.95,40.6
+2012,Jet Fuel,7.41,N/A,N/A,N/A,N/A,7.41,4.3
+2012,Residual Oil,2.35,0.22,N/A,2,0.27,4.84,2.8
+2012,Diesel Fuel (Distillate),12.73,N/A,N/A,N/A,N/A,12.73,7.5
+2012,Net Imports of Electricity,N/A,5.06,N/A,N/A,N/A,5.06,3.0
+2012,Other Petroleum,0.33,N/A,1.19,0.39,2.19,4.1,2.4
+2012,Heating Oil (Distillate),N/A,0.17,9.37,3.67,1.07,14.27,8.4
+2012,Coal,N/A,4.51,N/A,N/A,2.22,6.72,3.9
+2012,Gasoline,48.6,N/A,N/A,N/A,N/A,48.6,28.5
+2012,Natural Gas,0.37,27.25,19.59,14.8,4.94,66.96,39.2
+2011,Jet Fuel,4.44,N/A,N/A,N/A,N/A,4.44,2.5
+2011,Residual Oil,2.43,0.48,N/A,3.35,0.59,6.85,3.9
+2011,Diesel Fuel (Distillate),12.86,N/A,N/A,N/A,N/A,12.86,7.3
+2011,Net Imports of Electricity,N/A,7.26,N/A,N/A,N/A,7.26,4.1
+2011,Other Petroleum,0.35,N/A,1.52,0.5,1.84,4.21,2.4
+2011,Heating Oil (Distillate),N/A,0.14,7.88,4.4,1.2,13.62,7.8
+2011,Coal,N/A,9.17,N/A,0.01,2.37,11.56,6.6
+2011,Gasoline,48.42,N/A,N/A,N/A,N/A,48.42,27.6
+2011,Natural Gas,0.4,23.53,21.45,15.86,5.03,66.27,37.8
+2010,Jet Fuel,4.24,N/A,N/A,N/A,N/A,4.24,2.3
+2010,Residual Oil,5.71,0.85,N/A,3.7,0.24,10.49,5.6
+2010,Diesel Fuel (Distillate),13.17,N/A,N/A,N/A,N/A,13.17,7.1
+2010,Net Imports of Electricity,N/A,9.16,N/A,N/A,N/A,9.16,4.9
+2010,Other Petroleum,0.37,N/A,1.78,0.47,1.82,4.44,2.4
+2010,Heating Oil (Distillate),N/A,0.27,8.45,4.29,0.97,13.99,7.5
+2010,Coal,N/A,13.09,N/A,0.01,2.33,15.43,8.3
+2010,Gasoline,49.82,N/A,N/A,N/A,N/A,49.82,26.8
+2010,Natural Gas,0.37,23.01,21.2,15.61,4.84,65.02,35.0
