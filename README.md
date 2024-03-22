@@ -1,7 +1,7 @@
 # EcoTaxisNYC
 Data Science - PROYECTO GRUPAL
 
-![img_logo](assets\Logo.png)
+![img_logo](assets/Logo.png)
 
 ## Introducción
 La ciudad de Nueva York, conocida por su constante actividad, enfrenta desafíos significativos en términos de contaminación ambiental, especialmente en lo que respecta a la calidad del aire y el ruido. A medida que sus casi 8,5 millones de personas se desplazan diariamente por las calles congestionadas de esta metrópolis, el impacto de las emisiones vehiculares y el ruido generado por el tráfico se ha convertido en una preocupación creciente tanto para los residentes, como para las autoridades gubernamentales y los defensores del medio ambiente por igual. <br>
@@ -47,6 +47,6 @@ Análisis de la contaminación del aire o ruido por zonas: No se cuenta con info
 Vehículos convencionales de alquiler: Este servicio no es representativo al ser de servicios especiales por lo general de lujo que al no incluirlo en el análisis, no genera impacto en el negocio particular del cliente.<br>
 
 
-Más detalles en la [documentación de sprint1](Documentación\Documentación_Sprint_1.pdf)
+Más detalles en la [documentación de sprint1](Documentación/Documentación_Sprint_1.pdf)
 
 
