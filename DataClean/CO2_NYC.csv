@@ -1,0 +1,217 @@
+,Sectors Sector,Category Full,Category Label,Año,Consumed,Source MMBtu,tCO2e
+0,Stationary Energy,"Commercial and Institutional (commercial, institutional, and streetlights)",Commercial and Institutional,2005,232873595645.18,698908129.26,18589819.35
+1,Stationary Energy,"Commercial and Institutional (commercial, institutional, and streetlights)",Commercial and Institutional,2006,233265016671.72,710398966.7,16450708.16
+2,Stationary Energy,"Commercial and Institutional (commercial, institutional, and streetlights)",Commercial and Institutional,2007,245061693495.14,739773495.1800001,17356658.51
+3,Stationary Energy,"Commercial and Institutional (commercial, institutional, and streetlights)",Commercial and Institutional,2008,365658666653.54004,833583601.59,17381106.54
+4,Stationary Energy,"Commercial and Institutional (commercial, institutional, and streetlights)",Commercial and Institutional,2009,371674930798.44,817514359.28,16011242.02
+5,Stationary Energy,"Commercial and Institutional (commercial, institutional, and streetlights)",Commercial and Institutional,2010,329049175091.2,780282178.3299999,15430444.370000001
+6,Stationary Energy,"Commercial and Institutional (commercial, institutional, and streetlights)",Commercial and Institutional,2011,339664818415.73,786224968.58,14690599.379999999
+7,Stationary Energy,"Commercial and Institutional (commercial, institutional, and streetlights)",Commercial and Institutional,2012,313809213432.46,740254427.92,14044532.99
+8,Stationary Energy,"Commercial and Institutional (commercial, institutional, and streetlights)",Commercial and Institutional,2013,357271811428.77,790798289.27,14404439.639999999
+9,Stationary Energy,"Commercial and Institutional (commercial, institutional, and streetlights)",Commercial and Institutional,2014,378276253140.1,810440527.54,15151819.28
+10,Stationary Energy,"Commercial and Institutional (commercial, institutional, and streetlights)",Commercial and Institutional,2015,372118874110.31,809206342.62,15148308.65
+11,Stationary Energy,"Commercial and Institutional (commercial, institutional, and streetlights)",Commercial and Institutional,2016,362238216400.77997,790343436.12,14611065.05
+12,Stationary Energy,"Commercial and Institutional (commercial, institutional, and streetlights)",Commercial and Institutional,2017,393447284096.32996,825939519.24,14125095.58
+13,Stationary Energy,"Commercial and Institutional (commercial, institutional, and streetlights)",Commercial and Institutional,2018,394361825035.4,837999013.63,15219060.709999999
+14,Stationary Energy,"Commercial and Institutional (commercial, institutional, and streetlights)",Commercial and Institutional,2019,424339901157.72003,859531196.85,15070765.9
+15,Stationary Energy,"Commercial and Institutional (commercial, institutional, and streetlights)",Commercial and Institutional,2020,380162795801.72,743938072.63,12933987.959999999
+16,Stationary Energy,"Commercial and Institutional (commercial, institutional, and streetlights)",Commercial and Institutional,2021,384915086266.04004,759104837.08,13923462.23
+17,Stationary Energy,"Commercial and Institutional (commercial, institutional, and streetlights)",Commercial and Institutional,2022,403283365752.45996,790356473.89,14451352.139999999
+18,Stationary Energy,Fugitive natural gas,Fugitive,2005,442833.0,0.0,207588.58
+19,Stationary Energy,Fugitive natural gas,Fugitive,2006,426472.0,0.0,199918.97
+20,Stationary Energy,Fugitive natural gas,Fugitive,2007,464257.0,0.0,217631.59
+21,Stationary Energy,Fugitive natural gas,Fugitive,2008,471481.0,0.0,221018.01
+22,Stationary Energy,Fugitive natural gas,Fugitive,2009,469628.0,0.0,220149.37
+23,Stationary Energy,Fugitive natural gas,Fugitive,2010,877897.81,0.0,411535.63
+24,Stationary Energy,Fugitive natural gas,Fugitive,2011,913745.16,0.0,428339.93
+25,Stationary Energy,Fugitive natural gas,Fugitive,2012,830739.99,0.0,389429.27
+26,Stationary Energy,Fugitive natural gas,Fugitive,2013,940254.15,0.0,440766.66
+27,Stationary Energy,Fugitive natural gas,Fugitive,2014,1025278.94,0.0,480624.06
+28,Stationary Energy,Fugitive natural gas,Fugitive,2015,1008772.58,0.0,472886.31
+29,Stationary Energy,Fugitive natural gas,Fugitive,2016,1041898.42,0.0,488414.84
+30,Stationary Energy,Fugitive natural gas,Fugitive,2017,1053162.98,0.0,493695.37
+31,Stationary Energy,Fugitive natural gas,Fugitive,2018,1097743.35,0.0,514593.49
+32,Stationary Energy,Fugitive natural gas,Fugitive,2019,1115386.08,0.0,522863.94
+33,Stationary Energy,Fugitive natural gas,Fugitive,2020,1038543.86,0.0,486842.31
+34,Stationary Energy,Fugitive natural gas,Fugitive,2021,1035014.93,0.0,485188.04
+35,Stationary Energy,Fugitive natural gas,Fugitive,2022,1074730.93,0.0,503805.87
+36,Stationary Energy,Manufacturing and Construction (Industrial),Manufacturing and Construction,2005,71673944590.52,223760047.77,5898750.57
+37,Stationary Energy,Manufacturing and Construction (Industrial),Manufacturing and Construction,2006,70024163005.12,212091240.91000003,4835012.79
+38,Stationary Energy,Manufacturing and Construction (Industrial),Manufacturing and Construction,2007,73529581080.95001,220340021.59,5078790.67
+39,Stationary Energy,Manufacturing and Construction (Industrial),Manufacturing and Construction,2008,53736332034.229996,203347546.82999998,4421370.92
+40,Stationary Energy,Manufacturing and Construction (Industrial),Manufacturing and Construction,2009,48211924232.73,195506429.8,3915033.4899999998
+41,Stationary Energy,Manufacturing and Construction (Industrial),Manufacturing and Construction,2010,84585887386.51001,237252715.6,4646134.2700000005
+42,Stationary Energy,Manufacturing and Construction (Industrial),Manufacturing and Construction,2011,86725912595.77,240356113.57999998,4411111.83
+43,Stationary Energy,Manufacturing and Construction (Industrial),Manufacturing and Construction,2012,80904681841.68,232261018.72,4356330.32
+44,Stationary Energy,Manufacturing and Construction (Industrial),Manufacturing and Construction,2013,353786409380.22003,527439712.19,9136546.530000001
+45,Stationary Energy,Manufacturing and Construction (Industrial),Manufacturing and Construction,2014,95987371576.19,248980598.0,4648050.48
+46,Stationary Energy,Manufacturing and Construction (Industrial),Manufacturing and Construction,2015,95921770026.22,251079837.29,4664074.55
+47,Stationary Energy,Manufacturing and Construction (Industrial),Manufacturing and Construction,2016,95613529896.41,249035297.41,4585539.0
+48,Stationary Energy,Manufacturing and Construction (Industrial),Manufacturing and Construction,2017,99979764879.55,252264357.89999998,4249575.79
+49,Stationary Energy,Manufacturing and Construction (Industrial),Manufacturing and Construction,2018,108873678393.72,266034565.80999997,4788104.149999999
+50,Stationary Energy,Manufacturing and Construction (Industrial),Manufacturing and Construction,2019,105715292703.37,259038715.86,4485440.81
+51,Stationary Energy,Manufacturing and Construction (Industrial),Manufacturing and Construction,2020,94135754728.18001,220558834.70999998,3796626.66
+52,Stationary Energy,Manufacturing and Construction (Industrial),Manufacturing and Construction,2021,92947603184.75,221590535.25,4081977.2500000005
+53,Stationary Energy,Manufacturing and Construction (Industrial),Manufacturing and Construction,2022,97182518210.41,229593688.87,4207781.19
+54,Stationary Energy,Residential (small and large residential),Residential,2005,527273922459.86,853303395.19,20938407.259999998
+55,Stationary Energy,Residential (small and large residential),Residential,2006,500485445628.91,797856790.61,18132776.76
+56,Stationary Energy,Residential (small and large residential),Residential,2007,549434757559.9601,869329164.3900001,20054292.5
+57,Stationary Energy,Residential (small and large residential),Residential,2008,457102441429.05,779328143.1899999,17623245.09
+58,Stationary Energy,Residential (small and large residential),Residential,2009,450493386606.07996,787812577.1,17597178.96
+59,Stationary Energy,Residential (small and large residential),Residential,2010,508836195749.39,866795090.49,18897691.490000002
+60,Stationary Energy,Residential (small and large residential),Residential,2011,527352310151.6,882863859.11,18501178.68
+61,Stationary Energy,Residential (small and large residential),Residential,2012,478712886723.82007,819559562.55,17151779.72
+62,Stationary Energy,Residential (small and large residential),Residential,2013,263663099328.75,586927854.13,12886302.65
+63,Stationary Energy,Residential (small and large residential),Residential,2014,576900012442.02,893021591.23,17232287.580000002
+64,Stationary Energy,Residential (small and large residential),Residential,2015,569094759126.13,902657697.16,17799081.92
+65,Stationary Energy,Residential (small and large residential),Residential,2016,607436691754.53,929610698.88,17643926.790000003
+66,Stationary Energy,Residential (small and large residential),Residential,2017,581907471023.21,900521890.3399999,16399705.46
+67,Stationary Energy,Residential (small and large residential),Residential,2018,617058737086.85,950070883.5,17905794.58
+68,Stationary Energy,Residential (small and large residential),Residential,2019,602178847714.5701,924684408.6,17058290.25
+69,Stationary Energy,Residential (small and large residential),Residential,2020,571981156757.64,869163566.62,15646565.78
+70,Stationary Energy,Residential (small and large residential),Residential,2021,567053052781.4199,864262769.11,16135032.839999998
+71,Stationary Energy,Residential (small and large residential),Residential,2022,582541889866.36,880095668.81,16409353.98
+72,Total,Total,Total,2005,857130216849.63,2044479019.64,64741802.58
+73,Total,Total,Total,2006,829023375056.69,1987299325.91,58209592.38
+74,Total,Total,Total,2007,893515664829.79,2100514892.85,61509256.3
+75,Total,Total,Total,2008,901453485400.88,2079480962.13,57733599.4
+76,Total,Total,Total,2009,895368748048.84,2061578373.29,55356354.63
+77,Total,Total,Total,2010,948148516073.22,2151858853.74,57545078.83
+78,Total,Total,Total,2011,978679860332.43,2168454311.74,55699416.44
+79,Total,Total,Total,2012,898252680682.63,2048334673.2,53289811.35
+80,Total,Total,Total,2013,999733331986.09,2162900481.72,54178597.22
+81,Total,Total,Total,2014,1076074702138.56,2207191886.73,54731815.46
+82,Total,Total,Total,2015,1062744533054.77,2223293332.79,55628396.97
+83,Total,Total,Total,2016,1091427394203.72,2482083382.11,55140678.43
+84,Total,Total,Total,2017,1101624174566.63,2491997841.07,52995005.33
+85,Total,Total,Total,2018,1147467887814.17,2569801266.09,56745503.54
+86,Total,Total,Total,2019,1159896775670.42,2318965480.86,55611065.39
+87,Total,Total,Total,2020,1068048214599.7,2052175741.97,47824656.57
+88,Total,Total,Total,2021,1070674517779.72,2101138484.83,51990422.52
+89,Total,Total,Total,2022,1110353725892.66,2170098647.26,53705089.2
+90,Transportation,Aviation,Aviation,2005,246497.04,29875.44,2067.99
+91,Transportation,Aviation,Aviation,2006,254180.49,30806.67,2132.45
+92,Transportation,Aviation,Aviation,2007,247583.58,30007.13,2077.1
+93,Transportation,Aviation,Aviation,2008,228389.37,27680.79,1916.07
+94,Transportation,Aviation,Aviation,2009,214669.87,26017.99,1800.97
+95,Transportation,Aviation,Aviation,2010,226287.36,27426.03,1898.44
+96,Transportation,Aviation,Aviation,2011,186530.26,22607.47,1564.9
+97,Transportation,Aviation,Aviation,2012,158166.91,19169.83,1326.94
+98,Transportation,Aviation,Aviation,2013,210480.7,25510.26,1765.83
+99,Transportation,Aviation,Aviation,2014,236753.3,28694.5,1986.24
+100,Transportation,Aviation,Aviation,2015,268598.0,32554.08,2253.4
+101,Transportation,Aviation,Aviation,2016,257397.1,31196.53,2159.43
+102,Transportation,Aviation,Aviation,2017,254139.0,30801.65,2132.1
+103,Transportation,Aviation,Aviation,2018,226536.6,27456.24,1900.53
+104,Transportation,Aviation,Aviation,2019,200710.6,20293.33,1683.86
+105,Transportation,Aviation,Aviation,2020,190426.9,20293.33,1597.59
+106,Transportation,Aviation,Aviation,2021,167436.7,20293.33,1404.71
+107,Transportation,Aviation,Aviation,2022,169512.5,20544.92,1422.13
+108,Transportation,Marine Navigation,Marine Navigation,2005,4820479.61,671878.45,49897.65
+109,Transportation,Marine Navigation,Marine Navigation,2006,4584689.5,639014.02,47456.95
+110,Transportation,Marine Navigation,Marine Navigation,2007,3135128.85,436974.26,32452.28
+111,Transportation,Marine Navigation,Marine Navigation,2008,4333150.72,603954.55,44853.22
+112,Transportation,Marine Navigation,Marine Navigation,2009,4353756.39,606826.57,45066.52
+113,Transportation,Marine Navigation,Marine Navigation,2010,4979305.3,694015.57,51541.69
+114,Transportation,Marine Navigation,Marine Navigation,2011,5195635.79,724167.72,53780.96
+115,Transportation,Marine Navigation,Marine Navigation,2012,3053309.6,425570.29,31605.36
+116,Transportation,Marine Navigation,Marine Navigation,2013,8636376.0,1203737.73,89396.32
+117,Transportation,Marine Navigation,Marine Navigation,2014,5091439.0,709644.54,52702.17
+118,Transportation,Marine Navigation,Marine Navigation,2015,5377536.0,749520.41,55663.27
+119,Transportation,Marine Navigation,Marine Navigation,2016,8308018.0,1157971.29,85997.53
+120,Transportation,Marine Navigation,Marine Navigation,2017,5898698.3,822152.27,61050.0
+121,Transportation,Marine Navigation,Marine Navigation,2018,9831136.38,1370263.79,101763.86
+122,Transportation,Marine Navigation,Marine Navigation,2019,9558681.0,1247176.98,98943.63
+123,Transportation,Marine Navigation,Marine Navigation,2020,7946876.3,1247176.98,82256.44
+124,Transportation,Marine Navigation,Marine Navigation,2021,8948034.0,1247176.98,92622.71
+125,Transportation,Marine Navigation,Marine Navigation,2022,8988192.0,1252774.2,93038.39
+126,Transportation,On-Road,On-Road,2005,20848332118.98,228930368.85999998,15405255.389999999
+127,Transportation,On-Road,On-Road,2006,20953770580.370003,228833007.32,15385350.85
+128,Transportation,On-Road,On-Road,2007,21160340498.82,232844034.16,15471820.42
+129,Transportation,On-Road,On-Road,2008,20477128477.86,223536000.34,14820083.71
+130,Transportation,On-Road,On-Road,2009,20210912728.16,218464261.93,14469700.48
+131,Transportation,On-Road,On-Road,2010,21225844134.010002,228009468.32,15116390.84
+132,Transportation,On-Road,On-Road,2011,20692898634.6,221268714.87,14661645.7
+133,Transportation,On-Road,On-Road,2012,20468236463.13,217826530.0,14415036.21
+134,Transportation,On-Road,On-Road,2013,20570055678.300003,217808550.54,14398628.5
+135,Transportation,On-Road,On-Road,2014,20588723147.3,216324937.51,14307034.049999999
+136,Transportation,On-Road,On-Road,2015,21267709881.07,221718133.81,14654021.0
+137,Transportation,On-Road,On-Road,2016,21863984692.940002,474674354.63,14945894.08
+138,Transportation,On-Road,On-Road,2017,22065821400.82,475600158.58,14994258.47
+139,Transportation,On-Road,On-Road,2018,22763014411.460003,475885108.63,15390495.58
+140,Transportation,On-Road,On-Road,2019,23184099888.79,235405552.12,15549485.9
+141,Transportation,On-Road,On-Road,2020,18049177096.42,184854774.28,12228112.02
+142,Transportation,On-Road,On-Road,2021,21755875892.04,220035447.14,14545000.54
+143,Transportation,On-Road,On-Road,2022,23060603534.46,231428252.68,15263092.92
+144,Transportation,Railways,Railways,2005,4447459016.6,38875324.67,1121649.18
+145,Transportation,Railways,Railways,2006,4283215222.2,37449499.67999999,914065.14
+146,Transportation,Railways,Railways,2007,4319039932.4,37761196.14,930356.63
+147,Transportation,Railways,Railways,2008,4467501035.360001,39054034.84,864855.29
+148,Transportation,Railways,Railways,2009,4766288485.92,41647900.620000005,811507.45
+149,Transportation,Railways,Railways,2010,4439135217.37,38797959.4,771903.25
+150,Transportation,Railways,Railways,2011,4231285447.09,36993880.41,669410.71
+151,Transportation,Railways,Railways,2012,4347371520.15,37988393.89,718678.67
+152,Transportation,Railways,Railways,2013,4425950048.59,38696827.599999994,674334.0399999999
+153,Transportation,Railways,Railways,2014,4309707381.74,37685893.410000004,718210.2100000001
+154,Transportation,Railways,Railways,2015,4328555205.190001,37849247.42,705062.21
+155,Transportation,Railways,Railways,2016,4259110822.1499996,37230427.25,696822.76
+156,Transportation,Railways,Railways,2017,4210345625.21,36818961.09,604546.24
+157,Transportation,Railways,Railways,2018,4393145025.9800005,38413974.49,693744.19
+158,Transportation,Railways,Railways,2019,4461420259.08,39038137.120000005,662985.12
+159,Transportation,Railways,Railways,2020,3703683835.6099997,32393023.42,549228.53
+160,Transportation,Railways,Railways,2021,3986390719.4300003,34877425.94,669494.9299999999
+161,Transportation,Railways,Railways,2022,4268800449.13,37351243.89,706119.01
+162,Waste,Biological treatment,Biological treatment,2005,26351.0,0.0,5046.22
+163,Waste,Biological treatment,Biological treatment,2006,36787.16,0.0,7044.74
+164,Waste,Biological treatment,Biological treatment,2007,26374.39,0.0,5050.7
+165,Waste,Biological treatment,Biological treatment,2008,18717.19,0.0,3584.34
+166,Waste,Biological treatment,Biological treatment,2009,20689.42,0.0,3962.02
+167,Waste,Biological treatment,Biological treatment,2010,21730.67,0.0,4161.42
+168,Waste,Biological treatment,Biological treatment,2011,20101.28,0.0,3849.4
+169,Waste,Biological treatment,Biological treatment,2012,18731.65,0.0,3587.11
+170,Waste,Biological treatment,Biological treatment,2013,20562.45,0.0,3937.71
+171,Waste,Biological treatment,Biological treatment,2014,29207.44,0.0,5593.23
+172,Waste,Biological treatment,Biological treatment,2015,36807.66,0.0,7048.67
+173,Waste,Biological treatment,Biological treatment,2016,43783.36,0.0,8384.51
+174,Waste,Biological treatment,Biological treatment,2017,57098.08,0.0,10934.28
+175,Waste,Biological treatment,Biological treatment,2018,72940.27,0.0,13968.06
+176,Waste,Biological treatment,Biological treatment,2019,68451.46,0.0,13108.46
+177,Waste,Biological treatment,Biological treatment,2020,44652.3,0.0,8550.91
+178,Waste,Biological treatment,Biological treatment,2021,39428.22,0.0,7550.5
+179,Waste,Biological treatment,Biological treatment,2022,45240.0,0.0,8663.46
+180,Waste,Landfills,Landfills,2005,7420036.11,0.0,2264616.2
+181,Waste,Landfills,Landfills,2006,6454706.06,0.0,1969994.72
+182,Waste,Landfills,Landfills,2007,6366451.22,0.0,1943059.09
+183,Waste,Landfills,Landfills,2008,6351754.26,0.0,1938573.54
+184,Waste,Landfills,Landfills,2009,6235455.51,0.0,1903078.82
+185,Waste,Landfills,Landfills,2010,6163776.94,0.0,1881202.32
+186,Waste,Landfills,Landfills,2011,6308840.79,0.0,1925476.22
+187,Waste,Landfills,Landfills,2012,6221994.67,0.0,1898970.54
+188,Waste,Landfills,Landfills,2013,6191594.39,0.0,1889692.29
+189,Waste,Landfills,Landfills,2014,6245818.31,0.0,1906241.58
+190,Waste,Landfills,Landfills,2015,6166621.39,0.0,1882070.45
+191,Waste,Landfills,Landfills,2016,6205162.84,0.0,1893833.41
+192,Waste,Landfills,Landfills,2017,6221001.96,0.0,1898667.56
+193,Waste,Landfills,Landfills,2018,6254262.74,0.0,1908818.84
+194,Waste,Landfills,Landfills,2019,6264380.99,0.0,1911906.96
+195,Waste,Landfills,Landfills,2020,6423022.5,0.0,1960324.8
+196,Waste,Landfills,Landfills,2021,6316535.18,0.0,1927824.57
+197,Waste,Landfills,Landfills,2022,6266991.55,0.0,1912703.71
+198,Waste,Wastewater treatment,Wastewater treatment,2005,6821.7300000000005,0.0,258704.19
+199,Waste,Wastewater treatment,Wastewater treatment,2006,7113.16,0.0,265130.85
+200,Waste,Wastewater treatment,Wastewater treatment,2007,12467.48,0.0,417066.81
+201,Waste,Wastewater treatment,Wastewater treatment,2008,12278.3,0.0,412992.67
+202,Waste,Wastewater treatment,Wastewater treatment,2009,10998.32,0.0,377634.52999999997
+203,Waste,Wastewater treatment,Wastewater treatment,2010,9496.66,0.0,332175.11
+204,Waste,Wastewater treatment,Wastewater treatment,2011,10234.36,0.0,352458.73
+205,Waste,Wastewater treatment,Wastewater treatment,2012,7758.57,0.0,278534.22
+206,Waste,Wastewater treatment,Wastewater treatment,2013,6853.77,0.0,252787.05
+207,Waste,Wastewater treatment,Wastewater treatment,2014,5954.219999999999,0.0,227266.58000000002
+208,Waste,Wastewater treatment,Wastewater treatment,2015,6370.22,0.0,237926.54
+209,Waste,Wastewater treatment,Wastewater treatment,2016,4377.19,0.0,178641.03
+210,Waste,Wastewater treatment,Wastewater treatment,2017,3441.19,0.0,155344.47999999998
+211,Waste,Wastewater treatment,Wastewater treatment,2018,5241.42,0.0,207259.55
+212,Waste,Wastewater treatment,Wastewater treatment,2019,6336.76,0.0,235590.56
+213,Waste,Wastewater treatment,Wastewater treatment,2020,2858.27,0.0,130563.57
+214,Waste,Wastewater treatment,Wastewater treatment,2021,2487.01,0.0,120864.2
+215,Waste,Wastewater treatment,Wastewater treatment,2022,3412.8599999999997,0.0,147756.4
