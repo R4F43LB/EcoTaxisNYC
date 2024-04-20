@@ -1,0 +1,20 @@
+combinacion,nro_pasos,nro_capas_lstm,unidades_capa,nro_capas_dense,unidades_dense,loss_function,act_salida,act_lstm,act_dense,loss_value(mse),cv_scores_mean,tiempo(s)
+1,1,2,"100, 50",0,0,mse,relu,relu,sigmoid,0.020400969311594963,0.017620938299556733,59.9284291267395
+combinacion,nro_pasos,nro_capas_lstm,unidades_capa,nro_capas_dense,unidades_dense,loss_function,act_salida,act_lstm,act_dense,loss_value(mse),cv_scores_mean,tiempo(s)
+1,1,2,"100, 50",0,0,mse,relu,relu,sigmoid,0.02174554392695427,0.023644676305693984,63.002382040023804
+combinacion,nro_pasos,nro_capas_lstm,unidades_capa,nro_capas_dense,unidades_dense,loss_function,act_salida,act_lstm,act_dense,loss_value(mse),cv_scores_mean,tiempo(s)
+1,1,2,"50, 40",0,0,mse,relu,relu,sigmoid,0.020268240943551064,0.03642217774851516,60.24107098579407
+combinacion,nro_pasos,nro_capas_lstm,unidades_capa,nro_capas_dense,unidades_dense,loss_function,act_salida,act_lstm,act_dense,loss_value(mse),cv_scores_mean,tiempo(s)
+1,1,2,"50, 40",0,0,mse,relu,relu,sigmoid,0.02063867263495922,0.02713321398259011,88.31625127792358
+2,2,2,"50, 40",0,0,mse,relu,relu,sigmoid,0.03194814920425415,0.01870188484987264,28.074440956115723
+combinacion,nro_pasos,nro_capas_lstm,unidades_capa,nro_capas_dense,unidades_dense,loss_function,act_salida,act_lstm,act_dense,loss_value(mse),cv_scores_mean,tiempo(s)
+1,1,2,"50, 40",0,0,mse,relu,relu,linear,0.01535844337195158,0.01973497561266296,26.18237543106079
+2,2,2,"50, 40",0,0,mse,relu,relu,linear,0.0318058617413044,0.016348048867756572,26.64506196975708
+combinacion,nro_pasos,nro_capas_lstm,unidades_capa,nro_capas_dense,unidades_dense,loss_function,act_salida,act_lstm,act_dense,loss_value(mse),cv_scores_mean,tiempo(s)
+1,1,2,"50, 40",0,0,mse,relu,relu,linear,0.01732650026679039,0.05408841914767585,24.68282151222229
+2,2,2,"50, 40",0,0,mse,relu,relu,linear,0.022060593590140343,0.01994410016688057,27.924222469329834
+combinacion,nro_pasos,nro_capas_lstm,unidades_capa,nro_capas_dense,unidades_dense,loss_function,act_salida,act_lstm,act_dense,loss_value(mse),cv_scores_mean,tiempo(s)
+1,1,2,"50, 40",0,0,mse,relu,relu,linear,0.017138946801424026,0.027759370666613582,27.434558868408203
+2,2,2,"50, 40",0,0,mse,relu,relu,linear,0.02031772956252098,0.0163439878979639,29.02251362800598
+combinacion,nro_pasos,nro_capas_lstm,unidades_capa,nro_capas_dense,unidades_dense,loss_function,act_salida,act_lstm,act_dense,loss_value(mse),cv_scores_mean,tiempo(s)
+1,1,2,"50, 40",0,0,mse,relu,relu,linear,0.019859882071614265,0.02824843605799815,25.900252103805542
