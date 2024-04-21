@@ -12,7 +12,7 @@ def main():
         </div>
     """, unsafe_allow_html=True)
         # Obtener la ruta absoluta del directorio actual y agregar el nombre del archivo de imagen
-    logo_path = os.path.join(os.path.dirname(__file__), "Logo.png")
+    logo_path = os.path.join(os.path.dirname(__file__), "Asset\Logo.png")
     st.image(logo_path)
 
 
