@@ -116,8 +116,8 @@ def crear_modelo(X_reshaped, Y_reshaped, nro_capas_lstm=1, unidades_capa= [50], 
 
     return model
 
-def construir_modelo_cv_lstm(X, Y, nro_pasos=5, nro_capas_lstm=2, unidades_capa= [50,40], loss_= 'mse', act_salida='relu', act_lstm= 'relu', 
-                     epochs= 300, batch= 32, drop_out= 0, scaler= 'minmax', learning_r=0.0001, nro_capas_dense=0, unidades_dense=[0], 
+def construir_modelo_cv_lstm(X, Y, nro_pasos=5, nro_capas_lstm=2, unidades_capa= [100,60], loss_= 'mse', act_salida='relu', act_lstm= 'relu', 
+                     epochs= 350, batch= 32, drop_out= 0, scaler= 'minmax', learning_r=0.0001, nro_capas_dense=0, unidades_dense=[0], 
                      act_dense= 'linear', verbose=0):
     '''
     Construye y entrena un modelo de red neuronal utilizando la técnica de validación cruzada en series temporales.
@@ -235,7 +235,12 @@ def construir_modelo_cv_lstm(X, Y, nro_pasos=5, nro_capas_lstm=2, unidades_capa=
         }, index=y_test.index)
 
         test_predictions[district] = predictions_df
-        
+    
+    if verbose ==1:
+        print('Finalizada la construcción de LSTM')
+        print('RMSE por distrito:')
+        print(rmse_dict)
+
     return modelo, scaler_X, scaler_Y, test_predictions, scores, history, loss, rmse_dict
 
 def generador_X_lstm(X, p=5):
@@ -538,20 +543,41 @@ def generar_ponderaciones(lstm_errors, lgbm_errors, xgb_errors, rf_errors):
         pond_lgbm = 1 - lgbm_rmse/total_rmse
         pond_xgb = 1 - xgb_rmse/total_rmse
         pond_rf = 1 - rf_rmse/total_rmse
-
         sum_pond = pond_lstm + pond_lgbm + pond_xgb + pond_rf
-
         pond_lstm /= sum_pond
         pond_lgbm /= sum_pond
         pond_xgb /= sum_pond
         pond_rf /= sum_pond
 
         ponderaciones[dist] = {}
-        ponderaciones[dist]['lstm'] = pond_lstm
-        ponderaciones[dist]['lgbm'] = pond_lgbm
-        ponderaciones[dist]['xgb'] = pond_xgb
-        ponderaciones[dist]['rf'] = pond_rf
+        ponderaciones[dist]['lineal'] = {
+            'lstm': pond_lstm,
+            'lgbm': pond_lgbm,
+            'xgb': pond_xgb,
+            'rf': pond_rf
+        }
 
+        ponderaciones[dist]['exp'] = {}
+        alphas = [0.01, 0.1, 0.5, 1]
+        for alpha in alphas:
+
+            pond_lstm = np.exp(-alpha*lstm_rmse)
+            pond_lgbm = np.exp(-alpha*lgbm_rmse)
+            pond_xgb = np.exp(-alpha*xgb_rmse)
+            pond_rf = np.exp(-alpha*rf_rmse)
+            sum_pond = pond_lstm + pond_lgbm + pond_xgb + pond_rf
+            pond_lstm /= sum_pond
+            pond_lgbm /= sum_pond
+            pond_xgb /= sum_pond
+            pond_rf /= sum_pond
+
+            ponderaciones[dist]['exp'][alpha] = {
+                'lstm': pond_lstm,
+                'lgbm': pond_lgbm,
+                'xgb': pond_xgb,
+                'rf': pond_rf
+            }
+        
     return ponderaciones
 
 # Función para generar el ensemble:
@@ -720,7 +746,7 @@ def generar_X(nro_pasos=5, cantidad_dias=7):
     
     return df_pred
 
-def predecir(ensemble, cant_dias=7, verbose=0, nro_pasos=5, test=False, test_data=None):
+def predecir(ensemble, cant_dias=7, verbose=0, nro_pasos=5, test=False, test_data=None, ponderacion= 'lineal', alpha=1):
     
     '''
     Realiza predicciones utilizando el ensemble de modelos de machine learning.
@@ -732,6 +758,8 @@ def predecir(ensemble, cant_dias=7, verbose=0, nro_pasos=5, test=False, test_dat
     - nro_pasos (int): Número de pasos hacia atrás a considerar para la predicción de cada modelo.
     - test (bool): Indica si se están realizando pruebas (True) o no (False).
     - test_data (DataFrame): DataFrame que contiene los datos de prueba, solo se utiliza si test=True.
+    - ponderacion (str): 'lineal' indica función de ponderación lineal, 'exp' indica función de ponderación exponencial negativa.
+    - alpha (float): indica el valor del factor en el exponente en el caso de ponderación exponencial. posibles valores: [0.1, 0.5, 1, 10, 100]
 
     Retorna:
     - nyc_predictions (dict): Diccionario que contiene las predicciones del ensemble para cada distrito.
@@ -789,10 +817,18 @@ def predecir(ensemble, cant_dias=7, verbose=0, nro_pasos=5, test=False, test_dat
         lgbm_pred_df = pd.DataFrame({'lgbm': lgbm_pred}, index=indice_pred)
         lgbm_predictions[district] = lgbm_pred_df
 
-        lstm_pond = ponderaciones[district]['lstm']
-        rf_pond = ponderaciones[district]['rf']
-        xgb_pond = ponderaciones[district]['xgb']
-        lgbm_pond = ponderaciones[district]['lgbm']
+        if ponderacion == 'lineal':
+
+            lstm_pond = ponderaciones[district][ponderacion]['lstm']
+            rf_pond = ponderaciones[district][ponderacion]['rf']
+            xgb_pond = ponderaciones[district][ponderacion]['xgb']
+            lgbm_pond = ponderaciones[district][ponderacion]['lgbm']
+
+        if ponderacion == 'exp':
+            lstm_pond = ponderaciones[district][ponderacion][alpha]['lstm']
+            rf_pond = ponderaciones[district][ponderacion][alpha]['rf']
+            xgb_pond = ponderaciones[district][ponderacion][alpha]['xgb']
+            lgbm_pond = ponderaciones[district][ponderacion][alpha]['lgbm']
 
         ensemble_predictions = lstm_pond*lstm_predictions[district]['lstm'] + rf_pond*rf_pred_df['rf'] + xgb_pond*xgb_pred_df['xgb'] + lgbm_pond*lgbm_pred_df['lgbm']
         ensemble_predictions.rename('ensemble', inplace=True)
@@ -802,7 +838,8 @@ def predecir(ensemble, cant_dias=7, verbose=0, nro_pasos=5, test=False, test_dat
         
         condicion = lambda x: 0 if x < 0 else x
         nyc_predictions[district] = nyc_predictions[district].applymap(condicion)
-
+        nyc_predictions[district] = nyc_predictions[district].astype(int)
+        
     return nyc_predictions
     
 def graficar_predicciones(pred):
@@ -834,7 +871,7 @@ def graficar_predicciones(pred):
         plt.show()
 
 
-def train_test_ensemble(data, verbose=0, test_size=0.1, nro_pasos=5, exportar='si', file='ensemble.joblib', ensemble=None):
+def train_test_ensemble(data, verbose=0, test_size=0.2, nro_pasos=5, exportar='si', file='ensemble.joblib', ensemble=None):
     '''
     Entrena y prueba un ensemble de modelos de machine learning.
 
@@ -854,10 +891,12 @@ def train_test_ensemble(data, verbose=0, test_size=0.1, nro_pasos=5, exportar='s
     - ensemble (dict): Diccionario que contiene el ensemble de modelos entrenados.
     - ensemble_predictions (dict): Diccionario que contiene las predicciones del ensemble para cada distrito.
     - ensemble_errors (dict): Diccionario que contiene los errores de predicción del ensemble para cada distrito.
+    - ponderacion (dict): Diccionario que contiene la mejor ponderacion de modelos para efectuar predicciones.
     '''
-    if verbose==1 & ensemble==None:
+
+    if (verbose==1) and (ensemble==None):
         print('Comienzo del entrenamiento del ensemble')
-    if verbose==1 & ensemble != None:
+    if (verbose==1) and (ensemble != None):
         print('Comienzo del testeo del ensemble')
 
     columnas_X = ['año', 'mes', 'dia', 'hora', 'dia_semana', 'holiday', 'temperature_2m', 'rain', 'relative_humidity_2m', 'snowfall']
@@ -867,42 +906,100 @@ def train_test_ensemble(data, verbose=0, test_size=0.1, nro_pasos=5, exportar='s
 
     if ensemble == None:
         ensemble = generar_ensemble(train_data, exportar=exportar, file=file, p=nro_pasos, verbose=verbose)
-
-    test_pred_ensemble = predecir(ensemble, test=True, test_data=test_data[columnas_X], verbose=verbose)
-
+    
     ensemble_predictions = {}
     ensemble_errors = {}
+    ponderaciones = ['lineal', 'exp']
+    alphas = [0.01, 0.1, 0.5, 1]
 
-    for district in columnas_Y:
-        y_pred = test_pred_ensemble[district]['ensemble']
-        y_test = test_data[district].iloc[nro_pasos-1:-1]
-        
-        mse = mean_squared_error(y_test, y_pred)
-        rmse = np.sqrt(mse)
+    for ponderacion in ponderaciones:
 
-        ensemble_errors[district] = {'MSE': mse, 'RMSE': rmse}
+        ensemble_errors[ponderacion] = {}
+        ensemble_predictions[ponderacion] = {}
 
-        if verbose==1:
-            print('RMSE:', rmse)
+        if ponderacion == 'lineal':
+            if verbose == 1:
+                print('Ponderacion:', ponderacion)
 
-        predictions_df = pd.DataFrame({
-            'Predicted': y_pred,
-            'Real values': y_test
-        }, index=y_test.index)
+            test_pred_ensemble = predecir(ensemble, test=True, test_data=test_data[columnas_X], verbose=verbose, ponderacion=ponderacion)
 
-        ensemble_predictions[district] = predictions_df
+            for district in columnas_Y:
+                y_pred = test_pred_ensemble[district]['ensemble']
+                y_test = test_data[district].iloc[nro_pasos-1:-1]
+                
+                mse = mean_squared_error(y_test, y_pred)
+                rmse = np.sqrt(mse)
+                nrmse = rmse / y_test.mean()
+
+                ensemble_errors[ponderacion][district] = {'MSE': mse, 'RMSE': rmse, 'NRMSE': nrmse}
+
+                if verbose==1:
+                    print('Distrito:', district)
+                    print('RMSE:', rmse)
+
+                predictions_df = pd.DataFrame({
+                    'Predicted': y_pred,
+                    'Real values': y_test
+                }, index=y_test.index)
+
+                ensemble_predictions[ponderacion][district] = predictions_df
+
+        if ponderacion == 'exp':
+            for alpha in alphas:
+                if verbose == 1:
+                    print('Ponderacion:', ponderacion, 'Alpha:', alpha)
+                
+                ensemble_errors[ponderacion][alpha] = {}
+                ensemble_predictions[ponderacion][alpha] = {}
+
+                test_pred_ensemble = predecir(ensemble, test=True, test_data=test_data[columnas_X], verbose=verbose, 
+                                              ponderacion=ponderacion, alpha=alpha)
+
+                for district in columnas_Y:
+                    y_pred = test_pred_ensemble[district]['ensemble']
+                    y_test = test_data[district].iloc[nro_pasos-1:-1]
+                    
+                    mse = mean_squared_error(y_test, y_pred)
+                    rmse = np.sqrt(mse)
+                    nrmse = rmse / y_test.mean()
+
+                    ensemble_errors[ponderacion][alpha][district] = {'MSE': mse, 'RMSE': rmse, 'NRMSE': nrmse}
+
+                    if verbose==1:
+                        print('Distrito:', district)
+                        print('RMSE:', rmse)
+
+                    predictions_df = pd.DataFrame({
+                        'Predicted': y_pred,
+                        'Real values': y_test
+                    }, index=y_test.index)
+
+                    ensemble_predictions[ponderacion][alpha][district] = predictions_df
     
-    if verbose==1 & ensemble ==None:
-        print('Finalizado el entrenamiento del ensemble')
-        print('Errores', ensemble_errors)
+    best_nrmse = np.mean([ensemble_errors['lineal'][district]['NRMSE'] for district in columnas_Y])
+    best_pond = 'lineal'
+    best_alpha = 1
+    for alpha in alphas:
+        exp_nrmse = np.mean([ensemble_errors['exp'][alpha][district]['NRMSE'] for district in columnas_Y])
+        if exp_nrmse < best_nrmse:
+            best_nrmse = exp_nrmse
+            best_pond = 'exp'
+            best_alpha = alpha
 
-    if verbose==1 & ensemble !=None:
+    if (verbose==1):
         print('Finalizado el testeo del ensemble')
-        print('Errores', ensemble_errors)
+        print('Mejor ponderación:', best_pond)
+        print('Mejor alpha:', best_alpha)
+        print('Errores', ensemble_errors[best_pond])
 
-    return ensemble, ensemble_predictions, ensemble_errors
+    ponderacion = {}
 
-def train_ensemble(data, verbose=0, test_size=0.1, nro_pasos=5, exportar='si', file='ensemble.joblib'):
+    ponderacion['tipo'] = best_pond
+    ponderacion['alpha'] = best_alpha
+
+    return ensemble, ensemble_predictions, ensemble_errors, ponderacion
+
+def train_ensemble(data, verbose=0, test_size=0.2, nro_pasos=5, exportar='si', file='ensemble.joblib'):
     '''
     Entrena un ensemble de modelos de machine learning.
 
@@ -921,13 +1018,16 @@ def train_ensemble(data, verbose=0, test_size=0.1, nro_pasos=5, exportar='si', f
     - ensemble (dict): Diccionario que contiene el ensemble de modelos entrenados.
     - ensemble_predictions (dict): Diccionario que contiene las predicciones del ensemble para cada distrito.
     - ensemble_errors (dict): Diccionario que contiene los errores de predicción del ensemble para cada distrito.
+    - ponderacion (dict): Diccionario que contiene la mejor ponderacion de modelos para efectuar predicciones.
     '''
     
-    ensemble, ensemble_predictions, ensemble_errors = train_test_ensemble(data=data, verbose=verbose, test_size=test_size,
-                                                                            nro_pasos=nro_pasos, exportar=exportar, file=file)
-    return ensemble, ensemble_predictions, ensemble_errors
+    ensemble, ensemble_predictions, ensemble_errors, ponderacion = train_test_ensemble(data=data, verbose=verbose, test_size=test_size,
+                                                                            nro_pasos=nro_pasos, exportar=exportar, file=file
+                                                                            )
+    
+    return ensemble, ensemble_predictions, ensemble_errors, ponderacion
 
-def test_ensemble(data, ensemble, verbose=0, test_size=0.1, nro_pasos=5, exportar='si', file='ensemble.joblib'):
+def test_ensemble(data, ensemble, verbose=0, test_size=0.2, nro_pasos=5, exportar='no', file='ensemble.joblib'):
     '''
     Realiza pruebas del ensemble de modelos de machine learning.
 
@@ -936,7 +1036,7 @@ def test_ensemble(data, ensemble, verbose=0, test_size=0.1, nro_pasos=5, exporta
     - ensemble (dict): Diccionario que contiene el ensemble de modelos previamente entrenados.
     - verbose (int): Nivel de detalle de los mensajes de progreso (0 para no mostrar mensajes, 1 para mostrar).
     - test_size (float): Proporción de datos a utilizar como conjunto de prueba.
-    - nro_pasos (int): Número de pasos hacia atrás a considerar para la predicción de cada modelo.
+    - nro_pasos (int): Número de pasos hacia atrás a considerar para la predicción en modelo LSTM.
     - exportar (str): Opción para exportar los resultados de las pruebas ('si' para exportar, 'no' para no exportar).
     - file (str): Nombre del archivo para exportar los resultados de las pruebas.
 
@@ -947,8 +1047,44 @@ def test_ensemble(data, ensemble, verbose=0, test_size=0.1, nro_pasos=5, exporta
     - ensemble (dict): Diccionario que contiene el ensemble de modelos utilizados en las pruebas.
     - ensemble_predictions (dict): Diccionario que contiene las predicciones del ensemble para cada distrito.
     - ensemble_errors (dict): Diccionario que contiene los errores de predicción del ensemble para cada distrito.
+    - ponderacion (dict): Diccionario que contiene la mejor ponderacion de modelos para efectuar predicciones.
     '''
     
-    ensemble, ensemble_predictions, ensemble_errors = train_test_ensemble(data=data, verbose=verbose, test_size=test_size,
-                                                                            nro_pasos=nro_pasos, exportar=exportar, file=file, ensemble=ensemble)
-    return ensemble, ensemble_predictions, ensemble_errors
+    ensemble, ensemble_predictions, ensemble_errors, ponderacion = train_test_ensemble(data=data, verbose=verbose, test_size=test_size,
+                                                                            nro_pasos=nro_pasos, exportar=exportar, file=file, ensemble=ensemble
+                                                                            )
+    return ensemble, ensemble_predictions, ensemble_errors, ponderacion
+
+def graficar_pred_ensemble(pred, numero_dias=5):
+    
+    for district in pred.keys():
+        plt.figure(figsize=(12,12))
+        sns.set_style('darkgrid')
+        sns.lineplot(pred[district]['Predicted'][:24*numero_dias], label='Predicted values', color='blue')
+        sns.lineplot(pred[district]['Real values'][:24*numero_dias], label='Real values', color='green')
+        plt.title(f'Pedicciones de demanda en {district} utilizando Weighted Ensemble', fontsize=14)
+        plt.xlabel('Fecha-hora', fontsize=12)
+        plt.ylabel('Demanda', fontsize=12)
+        plt.legend(fontsize=10)
+        plt.tight_layout()
+        plt.show()
+
+
+def graficar_predicciones_modelos(ensemble, numero_dias=5):
+    
+    pred_modelos = ensemble['test_predictions']
+    districts = ['Bronx', 'Brooklyn', 'Manhattan', 'Queens', 'Staten Island']
+    for district in districts:
+            
+            plt.figure(figsize=(12,12))
+            sns.set_style('darkgrid')
+            sns.lineplot(pred_modelos['lstm'][district]['Predicted'][:numero_dias*24], label='LSTM', color='red')
+            sns.lineplot(pred_modelos['rf'][district]['Predicted'][:numero_dias*24], label='RF', color='green')
+            sns.lineplot(pred_modelos['xgb'][district]['Predicted'][:numero_dias*24], label='XGB', color='blue')
+            sns.lineplot(pred_modelos['lgbm'][district]['Predicted'][:numero_dias*24], label='LGBM', color='orange')
+            plt.title(f'Pedicciones en {district} de los diferentes modelos', fontsize=14)
+            plt.xlabel('Fecha-hora', fontsize=12)
+            plt.ylabel('Demanda', fontsize=12)
+            plt.legend(title='Modelo', fontsize=10, title_fontsize='12')
+            plt.tight_layout()
+            plt.show()
