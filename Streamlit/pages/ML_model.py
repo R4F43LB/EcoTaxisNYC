@@ -7,7 +7,7 @@ if 'predicciones' not in st.session_state:
     st.session_state['predicciones'] = None
 
 # Cargamos el modelo de ensemble
-ensemble_completo = load('../../ML Model/Entrenamiento/ensemble_1_complete.joblib')
+ensemble_completo = load('ensemble_1_complete.joblib')
 ensemble = ensemble_completo['ensemble']
 ponderacion = ensemble_completo['ponderacion']
 
