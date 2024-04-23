@@ -1,0 +1,17 @@
+pandas
+numpy
+seaborn
+matplotlib
+holidays
+tensorflow 
+scikit-learn
+keras
+scikeras
+openmeteo_requests
+requests_cache
+retry_requests
+joblib
+xgboost
+lightgbm
+plotly
+streamlit
