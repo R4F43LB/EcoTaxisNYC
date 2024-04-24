@@ -558,7 +558,7 @@ def generar_ponderaciones(lstm_errors, lgbm_errors, xgb_errors, rf_errors):
         }
 
         ponderaciones[dist]['exp'] = {}
-        alphas = [0.01, 0.1, 0.5, 1]
+        alphas = [0.001, 0.01, 0.1, 0.5]
         for alpha in alphas:
 
             pond_lstm = np.exp(-alpha*lstm_rmse)
@@ -910,7 +910,7 @@ def train_test_ensemble(data, verbose=0, test_size=0.2, nro_pasos=5, exportar='s
     ensemble_predictions = {}
     ensemble_errors = {}
     ponderaciones = ['lineal', 'exp']
-    alphas = [0.01, 0.1, 0.5, 1]
+    alphas = [0.001, 0.01, 0.1, 0.5]
 
     for ponderacion in ponderaciones:
 
@@ -1071,7 +1071,9 @@ def graficar_pred_ensemble(pred, numero_dias=5):
 
 
 def graficar_predicciones_modelos(ensemble, numero_dias=5):
-    
+    '''
+    Grafica las predicciones del set de testeo del entrenamiento de los distintos modelos correspondeintes al Ensemble.
+    '''
     pred_modelos = ensemble['test_predictions']
     districts = ['Bronx', 'Brooklyn', 'Manhattan', 'Queens', 'Staten Island']
     for district in districts:
@@ -1082,9 +1084,29 @@ def graficar_predicciones_modelos(ensemble, numero_dias=5):
             sns.lineplot(pred_modelos['rf'][district]['Predicted'][:numero_dias*24], label='RF', color='green')
             sns.lineplot(pred_modelos['xgb'][district]['Predicted'][:numero_dias*24], label='XGB', color='blue')
             sns.lineplot(pred_modelos['lgbm'][district]['Predicted'][:numero_dias*24], label='LGBM', color='orange')
-            plt.title(f'Pedicciones en {district} de los diferentes modelos', fontsize=14)
+            sns.lineplot(pred_modelos['lstm'][district]['Real values'][:numero_dias*24], label= 'Valores reales', color= 'black')
+            plt.title(f'Pedicciones en {district} de los diferentes modelos en el set de testeo', fontsize=14)
             plt.xlabel('Fecha-hora', fontsize=12)
             plt.ylabel('Demanda', fontsize=12)
             plt.legend(title='Modelo', fontsize=10, title_fontsize='12')
             plt.tight_layout()
+            plt.show()
+
+def exportar_modelo(ensemble, ensemble_predictions, ensemble_errors, ponderacion, archivo= 'modelo.joblib'):
+
+    modelo = {'ensemble': ensemble, 'ensemble_predictions': ensemble_predictions, 'ensemble_errors': ensemble_errors, 'ponderacion': ponderacion}
+    dump(modelo, archivo)
+
+    print('Modelo exportado:', archivo)
+
+def graficar_feature_importances(ensemble):
+    districts = ['Bronx', 'Brooklyn', 'Manhattan', 'Queens', 'Staten Island']
+    columnas_X = ['año', 'mes', 'dia', 'hora', 'dia_semana', 'holiday', 'temperature_2m', 'rain', 'relative_humidity_2m', 'snowfall']
+    models = ['rf', 'xgb', 'lgbm']
+    for model in models:
+        for district in districts:
+            temp_model = ensemble['models'][model][district]
+            feature_importances = pd.Series(temp_model.feature_importances_, index=columnas_X)
+            feature_importances.nlargest(10).plot(kind='barh')
+            plt.title(f'Feature Importances del modelo {model} en el distrito {district} ')
             plt.show()
