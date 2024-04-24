@@ -1,8 +1,3 @@
-# este archivo contiene las funciones para generar un ensemble de modelos LSTM, RF, XGB y LGBM y funciones para realizar predicciones
-# a partir del ensemble construido
-
-# importamos librerias necesarias
-
 import pandas as pd
 import numpy as np
 import warnings
