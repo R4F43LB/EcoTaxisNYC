@@ -16,7 +16,16 @@ retry_requests
 xgboost
 lightgbm
 tempfile
-google.cloud
+google-api-core==2.18.0
+google-auth==2.29.0
+google-cloud==0.34.0
+google-cloud-bigquery==3.20.1
+google-cloud-core==2.4.1
+google-cloud-storage==2.16.0
+google-crc32c==1.5.0
+google-resumable-media==2.7.0
+googleapis-common-protos==1.63.0
+
 openpyxl
 geopandas
 re
