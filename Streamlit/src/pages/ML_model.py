@@ -2,6 +2,7 @@ from utils.ensemble_functions import *
 import streamlit as st
 import plotly.graph_objs as go
 import os
+import tarfile
 
 
 def main():
@@ -11,10 +12,24 @@ def main():
         st.session_state['predicciones'] = None
 
     # Cargamos el modelo de ensemble
-    ensemble_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../data/ensemble_1_complete.joblib'))
-    ensemble_completo = load(ensemble_path)
+    # Ruta del archivo tar.gz
+    ensemble_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../data/ensemble_1_complete.tar.gz'))
+
+    # Directorio de extracción
+    extracted_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../data/'))
+
+    # Descomprimir el archivo tar.gz
+    with tarfile.open(ensemble_path, 'r:gz') as tar:
+        tar.extractall(path=extracted_dir)
+
+    # Cargar el modelo desde el archivo descomprimido
+    model_path = os.path.join(extracted_dir, 'ensemble_1_complete.joblib')
+    ensemble_completo = load(model_path)
+    
     ensemble = ensemble_completo['ensemble']
     ponderacion = ensemble_completo['ponderacion']
+
+    os.remove(model_path)
 
     def graficar_predicciones_interactivas(pred, tipo_prediccion):
         '''
