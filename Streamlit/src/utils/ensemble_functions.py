@@ -118,7 +118,6 @@ def generar_X(nro_pasos=5, cantidad_dias=7):
     df_pred['hora'] = df_pred['date'].dt.hour
     df_pred['dia_semana'] = df_pred['date'].dt.weekday + 1
     us_holidays = holidays.US(years=[anio - 1, anio, anio + 1])
-    us_holidays
     df_pred['holiday'] = np.where(df_pred['fecha'].isin(us_holidays), 1, 0)
     df_pred.drop(columns='fecha', inplace=True)
     df_pred.rename(columns={'date': 'datetime'}, inplace=True)
