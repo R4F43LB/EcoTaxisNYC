@@ -33,7 +33,12 @@ def main():
     # Descomprimir el archivo tar.gz
     with tarfile.open(ensemble_path, 'r:gz') as tar:
         tar.extractall(path=extracted_dir)
-
+    # Verificación de existencia del archivo extraído
+    extracted_joblib_path = os.path.join(extracted_dir, 'ensemble_1_complete.joblib')
+    if os.path.exists(extracted_joblib_path):
+        print(f"Archivo {extracted_joblib_path} extraído correctamente.")
+    else:
+        print(f"Error: Archivo {extracted_joblib_path} no encontrado tras la extracción.")
     # Cargar el modelo desde el archivo descomprimido
     model_path = os.path.join(extracted_dir, 'ensemble_1_complete.joblib')
     print(f"Intentando cargar el modelo desde: {model_path}")
