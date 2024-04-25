@@ -13,17 +13,18 @@ def main():
 
     # Cargamos el modelo de ensemble
     # Ruta del archivo tar.gz
-    ensemble_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../data/ensemble_1_complete.tar.gz'))
-
+    #ensemble_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../data/ensemble_1_complete.tar.gz'))
+    ensemble_path = '../../data/ensemble_1_complete.tar.gz'
     # Directorio de extracción
-    extracted_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../data/'))
-
+    #extracted_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../data/'))
+    extracted_dir = '../../data/'
     # Descomprimir el archivo tar.gz
     with tarfile.open(ensemble_path, 'r:gz') as tar:
         tar.extractall(path=extracted_dir)
 
     # Cargar el modelo desde el archivo descomprimido
-    model_path = os.path.join(extracted_dir, 'ensemble_1_complete.joblib')
+    #model_path = os.path.join(extracted_dir, 'ensemble_1_complete.joblib')
+    model_path = '../../data/ensemble_1_complete.joblib'
     ensemble_completo = load(model_path)
     
     ensemble = ensemble_completo['ensemble']
