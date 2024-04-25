@@ -4,8 +4,7 @@ joblib==1.3.2
 pandas==2.1.4
 numpy==1.25.2
 scikit-learn==1.3.2
-#probamos version 0.24 de holidays en vez de la 0.46 para solucionar problemas de deploy en streamlit
-holidays==0.24
+holidays==0.46
 tensorflow==2.15.0
 keras==2.15.0
 scikeras==0.12.0
