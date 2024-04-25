@@ -186,13 +186,13 @@ def main():
     # Definir la transformación ETL para SHX
     def etl_estaciones(file_path):
         # Cargar el archivo SHX usando GeoPandas
-        data = gpd.read_file(file_path)
+        data_latlon = gpd.read_file(file_path)
 
         # Definir EPSG:2263 que está en pies (LATEST WELL-KNOWN IDENTIFIER 2263)
-        data.crs = 'EPSG:2263'
+        #data.crs = 'EPSG:2263' # desde el Json no es necesario
 
         # Corregir coordenadas planas a mundiales
-        data_latlon = data.to_crs('EPSG:4326')
+        #data_latlon = data.to_crs('EPSG:4326') # desde el json no es necesario
 
         # Calcular los centroides de los polígonos
         data_latlon['centroid'] = data_latlon['geometry'].centroid
