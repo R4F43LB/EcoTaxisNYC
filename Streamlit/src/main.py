@@ -3,7 +3,7 @@ import os
 
 import subprocess
 # Ejecutar el script setup.sh para instalar los módulos necesarios
-subprocess.run(['../setup.sh'])
+subprocess.run(['setup.sh'])
 
 from pages import Cargar_Datos, Dashboard, ML_model
 
