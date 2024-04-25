@@ -10,11 +10,6 @@ def main():
     # Inicialización de variables de sesión para almacenar el estado
     if 'predicciones' not in st.session_state:
         st.session_state['predicciones'] = None
-
-    # Cargamos el modelo de ensemble
-
-    
-    # Ruta del archivo tar.gz
     
     # Ruta del archivo ensemble_1_complete.tar.gz
     ensemble_path = os.path.join(os.path.dirname(__file__), '../../data/ensemble_1_sin_lstm.tar.gz')
@@ -84,8 +79,16 @@ def main():
             for district, df in dfs:
                 df.to_excel(writer, sheet_name=f'Predicciones_{district}')
 
-            # Mostrar mensaje de descarga
-            st.success(f'Archivo Excel generado y descargado correctamente.')
+        # Leer el contenido del archivo Excel generado
+        with open('predicciones.xlsx', 'rb') as f:
+            contenido = f.read()
+            
+        excel_filename = 'predicciones.xlsx'
+        if os.path.exists(excel_filename):
+            os.remove(excel_filename)
+            print(f"Archivo {excel_filename} eliminado correctamente.")
+
+        return contenido
 
     def graficar_predicciones_interactivas(pred, tipo_prediccion, generar_excel=False):
         '''
@@ -102,7 +105,15 @@ def main():
         '''
         if generar_excel:
             # Generar archivo Excel
-            generar_archivo_excel(pred, tipo_prediccion)
+            contenido_excel = generar_archivo_excel(pred, tipo_prediccion)
+
+            # Mostrar el botón de descarga
+            st.download_button(
+                label='Descargar Predicciones',
+                data=contenido_excel,
+                file_name='predicciones.xlsx',
+                mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            )
 
         traces = []  # Lista para almacenar las líneas de cada distrito
 
@@ -177,13 +188,17 @@ def main():
         st.session_state['predicciones'] = predicciones
         # Llamar a la función para graficar las predicciones de manera interactiva
         graficar_predicciones_interactivas(predicciones, tipo_prediccion)
+        contenido_excel = generar_archivo_excel(st.session_state['predicciones'], tipo_prediccion)
+        st.download_button(
+            label='Descargar Predicciones',
+            data=contenido_excel,
+            file_name='predicciones.xlsx',
+            mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
 
     # Verificar si ya existen predicciones antes de mostrar los selectores de fecha y hora
     if st.session_state['predicciones'] is not None:
-        
-        if st.button("Descargar Excel"):
-            generar_archivo_excel(st.session_state['predicciones'], tipo_prediccion)
-        
+
         st.write("### Selecciona un día y una hora para ver la demanda:")
         dia_seleccionado = st.date_input("Selecciona un día:", min_value=pd.to_datetime('today').date(), max_value=pd.to_datetime('today').date() + pd.Timedelta(days=dias_prediccion-1))
         
@@ -198,9 +213,6 @@ def main():
             st.write("### Demanda por distrito:")
             for district, value in demanda.items():
                 st.write(f"- {district}: {value}")
-            
-            
-
 
 if __name__ == "__main__":
     main()
