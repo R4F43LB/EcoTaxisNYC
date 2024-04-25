@@ -19,15 +19,25 @@ def main():
     # Mostrar el selectbox para elegir una opción
     opcion_seleccionada = st.selectbox('Seleccione un archivo para subir a Google Cloud Platform:', opciones)
 
+    # Recuperar las credenciales desde las variables de entorno:
+        
+    private_key = st.secrets.get("connections.gcs.private_key")
+    project_id = st.secrets.get("connections.gcs.project_id")
+    private_key_id = st.secrets.get("connections.gcs.private_key_id")
+    client_email = st.secrets.get("connections.gcs.client_email")
+    client_id = st.secrets.get("connections.gcs.client_id")
+    auth_uri = st.secrets.get("connections.gcs.auth_uri")
+    token_uri = st.secrets.get("connections.gcs.token_uri")
+    auth_provider_x509_cert_url = st.secrets.get("connections.gcs.auth_provider_x509_cert_url")
+    client_x509_cert_url = st.secrets.get("connections.gcs.client_x509_cert_url")
+    universe_domain = st.secrets.get("connections.gcs.universe_domain")
 
     ### SUBIR DATOS DE EMISIONES DE CO2___________________________________________________________________________________:
     
     if opcion_seleccionada == 'Emisiones de CO2 en NYC':
-        # Establecer la variable de entorno GOOGLE_APPLICATION_CREDENTIALS
-        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "sturdy-gate-417001-1fe4b0dcfb9d.json"
+        
 
         # Variables globales del proyecto
-        project_id = 'sturdy-gate-417001'  # Proyecto
         bucket_name = 'data_co2_new_york'  # Bucket 
 
         # Función para convertir el archivo Excel a CSV
@@ -157,7 +167,7 @@ def main():
 
     # Establecer la variable de entorno GOOGLE_APPLICATION_CREDENTIALS
 
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "sturdy-gate-417001-1fe4b0dcfb9d.json"
+    #os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "sturdy-gate-417001-1fe4b0dcfb9d.json"
 
     # Función para cargar el archivo al bucket de Google Cloud Storage
     def upload_to_gcs(file_path, bucket_name, blob_name):
@@ -243,7 +253,7 @@ def main():
 
     # Establecer la variable de entorno GOOGLE_APPLICATION_CREDENTIALS
 
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "sturdy-gate-417001-1fe4b0dcfb9d.json"
+    #os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "sturdy-gate-417001-1fe4b0dcfb9d.json"
 
     # Función para cargar el archivo al bucket de Google Cloud Storage
     def upload_to_gcs(file_path, bucket_name, blob_name):
