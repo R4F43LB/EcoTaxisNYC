@@ -56,18 +56,49 @@ def main():
     ensemble['ensemble']['models']['lstm'] = lstm_model
     ensemble = ensemble['ensemble']
 
-    def graficar_predicciones_interactivas(pred, tipo_prediccion):
+    def generar_archivo_excel(pred, tipo_prediccion):
+    # Crear un DataFrame con las predicciones
+        dfs = []
+        for district, preds in pred.items():
+            if tipo_prediccion == 'Ensemble':
+                values = preds['ensemble']
+                df = pd.DataFrame(values, columns=['ensemble'])
+                df.rename(columns={'ensemble': 'Demanda'}, inplace=True)
+            else:
+                df = pd.DataFrame()
+                for model, values in preds.items():
+                    if model != 'ensemble':
+                        df[model] = values
+            df.index = pd.to_datetime(df.index)
+            df.index.name = 'Fecha'
+            df.columns.name = 'Distrito'
+            dfs.append((district, df))
+
+        # Formatear el DataFrame para Excel
+        with pd.ExcelWriter('predicciones.xlsx') as writer:
+            for district, df in dfs:
+                df.to_excel(writer, sheet_name=f'Predicciones_{district}')
+
+            # Mostrar mensaje de descarga
+            st.success(f'Archivo Excel generado y descargado correctamente.')
+
+    def graficar_predicciones_interactivas(pred, tipo_prediccion, generar_excel=False):
         '''
         Grafica las predicciones realizadas por el modelo de ensemble de manera interactiva.
 
         Argumentos:
         - pred (dict): Diccionario que contiene los DataFrames de predicciones para cada distrito.
         - tipo_prediccion (str): Tipo de predicción a mostrar ('Ensemble' o 'Modelos')
+        - generar_excel (bool): Permite al usuario descargar excel con las predicciones. Predeterminado en False.
 
         Descripción detallada:
         La función recibe un diccionario de DataFrames de predicciones para cada distrito y grafica las predicciones realizadas por los modelos LSTM, RandomForest, XGBoost, LightGBM y el ensemble ponderado de manera interactiva.
         Cada gráfico muestra las predicciones de cada modelo por separado y la predicción del ensemble.
         '''
+        if generar_excel:
+            # Generar archivo Excel
+            generar_archivo_excel(pred, tipo_prediccion)
+
         traces = []  # Lista para almacenar las líneas de cada distrito
 
         # Crear una línea para cada distrito
@@ -144,6 +175,10 @@ def main():
 
     # Verificar si ya existen predicciones antes de mostrar los selectores de fecha y hora
     if st.session_state['predicciones'] is not None:
+        
+        if st.button("Descargar Excel"):
+            generar_archivo_excel(st.session_state['predicciones'], tipo_prediccion)
+        
         st.write("### Selecciona un día y una hora para ver la demanda:")
         dia_seleccionado = st.date_input("Selecciona un día:", min_value=pd.to_datetime('today').date(), max_value=pd.to_datetime('today').date() + pd.Timedelta(days=dias_prediccion-1))
         
@@ -158,6 +193,9 @@ def main():
             st.write("### Demanda por distrito:")
             for district, value in demanda.items():
                 st.write(f"- {district}: {value}")
+            
+            
+
 
 if __name__ == "__main__":
     main()
