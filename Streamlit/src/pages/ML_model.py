@@ -3,7 +3,7 @@ import streamlit as st
 import plotly.graph_objs as go
 import os
 import tarfile
-
+import keras
 
 def main():
 
@@ -17,7 +17,7 @@ def main():
     # Ruta del archivo tar.gz
     
     # Ruta del archivo ensemble_1_complete.tar.gz
-    ensemble_path = os.path.join(os.path.dirname(__file__), '../../data/ensemble_1_complete.tar.gz')
+    ensemble_path = os.path.join(os.path.dirname(__file__), '../../data/ensemble_1_sin_lstm.tar.gz')
 
     # Verificación de existencia del archivo
     if os.path.exists(ensemble_path):
@@ -25,7 +25,7 @@ def main():
     else:
         print(f"Error: Archivo {ensemble_path} no encontrado en Streamlit Sharing.")
 
-    ensemble_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../data/ensemble_1_complete.tar.gz'))
+    ensemble_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../data/ensemble_1_sin_lstm.tar.gz'))
     print('Dirección del ensemble: ',ensemble_path)
     # Directorio de extracción
     extracted_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../data/'))
@@ -34,20 +34,27 @@ def main():
     with tarfile.open(ensemble_path, 'r:gz') as tar:
         tar.extractall(path=extracted_dir)
     # Verificación de existencia del archivo extraído
-    extracted_joblib_path = os.path.join(extracted_dir, 'ensemble_1_complete.joblib')
+    extracted_joblib_path = os.path.join(extracted_dir, 'ensemble_1_sin_lstm.joblib')
     if os.path.exists(extracted_joblib_path):
         print(f"Archivo {extracted_joblib_path} extraído correctamente.")
     else:
         print(f"Error: Archivo {extracted_joblib_path} no encontrado tras la extracción.")
     # Cargar el modelo desde el archivo descomprimido
-    model_path = os.path.join(extracted_dir, 'ensemble_1_complete.joblib')
+    model_path = os.path.join(extracted_dir, 'ensemble_1_sin_lstm.joblib')
     print(f"Intentando cargar el modelo desde: {model_path}")
-    ensemble_completo = load(model_path)
-    
-    ensemble = ensemble_completo['ensemble']
-    ponderacion = ensemble_completo['ponderacion']
+    ensemble_sin_lstm = load(model_path)
+    print('Archivo cargado ensemble_sin_lstm cargado')
+    print('claves del diccionario: ', ensemble_sin_lstm.keys())
 
+    ponderacion = ensemble_sin_lstm['ponderacion']
     os.remove(model_path)
+
+    lstm_model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../data/lstm_model.h5'))
+    lstm_model = keras.models.load_model(lstm_model_path)
+
+    ensemble = ensemble_sin_lstm
+    ensemble['ensemble']['models']['lstm'] = lstm_model
+    ensemble = ensemble['ensemble']
 
     def graficar_predicciones_interactivas(pred, tipo_prediccion):
         '''
