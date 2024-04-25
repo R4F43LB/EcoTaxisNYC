@@ -47,7 +47,12 @@ def main():
     print('claves del diccionario: ', ensemble_sin_lstm.keys())
 
     ponderacion = ensemble_sin_lstm['ponderacion']
-    #os.remove(model_path)
+    
+    if os.path.exists(model_path):
+        os.remove(model_path)
+        print(f"Archivo {model_path} eliminado correctamente.")
+    else:
+        print(f"Error: Archivo {model_path} no encontrado.")
 
     lstm_model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../data/lstm_model.h5'))
     lstm_model = keras.models.load_model(lstm_model_path)
