@@ -12,7 +12,19 @@ def main():
         st.session_state['predicciones'] = None
 
     # Cargamos el modelo de ensemble
+
+    
     # Ruta del archivo tar.gz
+    
+    # Ruta del archivo ensemble_1_complete.tar.gz
+    ensemble_path = os.path.join(os.path.dirname(__file__), '../../data/ensemble_1_complete.tar.gz')
+
+    # Verificación de existencia del archivo
+    if os.path.exists(ensemble_path):
+        print(f"Archivo {ensemble_path} encontrado en Streamlit Sharing.")
+    else:
+        print(f"Error: Archivo {ensemble_path} no encontrado en Streamlit Sharing.")
+
     ensemble_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../data/ensemble_1_complete.tar.gz'))
     print('Dirección del ensemble: ',ensemble_path)
     # Directorio de extracción
