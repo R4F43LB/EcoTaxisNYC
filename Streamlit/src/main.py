@@ -1,6 +1,10 @@
 import streamlit as st
 import os
 
+import subprocess
+# probamos de instalar las dependencias que generan problemas directamente en main.py
+subprocess.run(['pip', 'install', 'google-cloud', 'holidays'])
+
 
 from pages import Cargar_Datos, Dashboard, ML_model
 
