@@ -51,7 +51,7 @@ Vehículos convencionales de alquiler: Este servicio no es representativo al ser
 Para abordar este proyecto, se implementó una estrategia basada en la recopilación, procesamiento y análisis de datos de diversas fuentes. Las tecnologías utilizadas en este proyecto demuestran el poder de la analítica de datos para abordar problemas complejos y tomar decisiones estratégicas. La combinación de herramientas como Cloud Platform, Python, Pandas, TensorFlow, Matplotlib, Seaborn, Streamlit y Power BI permite un análisis de datos completo y eficiente, desde la recolección y procesamiento hasta la visualización y presentación de resultados, lo que conduce a la toma de decisiones estratégicas informadas:
 1.	Recopilación y almacenamiento de datos:
     -	Técnicas de extracción de datos: Se emplearon diversas técnicas para obtener los datos necesarios, incluyendo:
-        -	Web scraping: Se extrajeron datos de sitios web relevantes para obtener información sobre el tráfico, la calidad del aire y la contaminación sonora.
+        -	Web scraping: Se extrajeron datos del sitio web [Electric Vehicle Database]([Documentación/Documentación_Sprint_1.pdf](https://ev-database.org/)) relevante para obtener información actualizada sobre los vehículos electricos.
         -	Descarga de archivos: Se descargaron archivos en formato .parquet y .csv de fuentes oficiales y públicas.
     -	Infraestructura en la nube: Google Cloud Platform (GCP) se utilizó como plataforma central para el almacenamiento y procesamiento de datos proporcionando una base sólida para el manejo de grandes volúmenes de datos.
         -	Cloud Storage: Se emplearon buckets de Cloud Storage para almacenar los datos recopilados de diferentes fuentes.
@@ -62,13 +62,13 @@ Para abordar este proyecto, se implementó una estrategia basada en la recopilac
         -  Beautiful Soup: Biblioteca para extraer datos de sitios web mediante web scraping.
         -  Pandas: Biblioteca para manipulación y análisis de datos, incluyendo limpieza, transformación y visualización.
         -  TensorFlow: Biblioteca para el desarrollo y entrenamiento de modelos de machine learning y construcción de modelos de aprendizaje profundo personalizados para tareas que requieren un alto grado de control y flexibilidad.
-	  -  Cloud Functions: Se utilizaron Cloud Functions para automatizar tareas de procesamiento de datos, como la limpieza y transformación de los mismos para luego ser cargados en BigQuery (ETL).
+	  -  [Cloud Functions](Google_Cloud_Platform/cloud_functions/): Se utilizaron Cloud Functions para automatizar tareas de procesamiento de datos, como la limpieza y transformación de los mismos para luego ser cargados en BigQuery (ETL).
     -  Cloud Scheduler: Se programaron tareas de extracción y procesamiento de datos de forma periódica utilizando Cloud Scheduler.
-    -  Análisis de datos: Se analizaron las relaciones entre variables como el número de viajes, la calidad del aire, la contaminación sonora y las condiciones climáticas para identificar patrones y tendencias.
-    -  Preprocesamiento: Se limpiaron y transformaron los datos utilizando Pandas, eliminando duplicados, valores nulos y inconsistencias. 
+    -  [Análisis de datos](EDA/): Se analizaron las relaciones entre variables como el número de viajes, la calidad del aire, la contaminación sonora y las condiciones climáticas para identificar patrones y tendencias.
+    -  [Preprocesamiento](EDA/): Se limpiaron y transformaron los datos utilizando Pandas, eliminando duplicados, valores nulos y inconsistencias. 
 4.	Visualización y presentación de resultados:
-    -  Streamlit: Se desarrolló una aplicación web con Streamlit para visualizar los resultados del análisis de datos y el modelo de machine learning.
-    -  Power BI: Se creó un dashboard en Power BI para mostrar los indicadores clave de rendimiento (KPIs) y las principales conclusiones del análisis.
+    -  [Streamlit](Streamlit/): Se desarrolló una aplicación web con Streamlit para visualizar los resultados del análisis de datos y el modelo de machine learning.
+    -  Power BI: Se creó un [dashboard](Dashboard/) en Power BI para mostrar los indicadores clave de rendimiento (KPIs) y las principales conclusiones del análisis.
   
 ## Modelo de Machine Learning
 
