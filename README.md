@@ -46,6 +46,38 @@ Análisis Económico de la Incorporación de Vehículos Alternativos vs Convenci
 Análisis de la contaminación del aire o ruido por zonas: No se cuenta con información suficiente para esta discriminación en la información; aunque se hará lo posible “de ser necesario”, realizar estimaciones basadas en los tipos de vehículos que transitan por zona. Sin embargo, se considera que la agregación actual es suficiente para conocer el impacto de los vehículos en la contaminación ambiental.
 Vehículos convencionales de alquiler: Este servicio no es representativo al ser de servicios especiales por lo general de lujo que al no incluirlo en el análisis, no genera impacto en el negocio particular del cliente.<br>
 
+## Tecnologías clave para el análisis de datos de taxis en Nueva York
+
+Para abordar este proyecto, se implementó una estrategia basada en la recopilación, procesamiento y análisis de datos de diversas fuentes. Las tecnologías utilizadas en este proyecto demuestran el poder de la analítica de datos para abordar problemas complejos y tomar decisiones estratégicas. La combinación de herramientas como Cloud Platform, Python, Pandas, TensorFlow, Matplotlib, Seaborn, Streamlit y Power BI permite un análisis de datos completo y eficiente, desde la recolección y procesamiento hasta la visualización y presentación de resultados, lo que conduce a la toma de decisiones estratégicas informadas:
+1.	Recopilación y almacenamiento de datos:
+    -	Técnicas de extracción de datos: Se emplearon diversas técnicas para obtener los datos necesarios, incluyendo:
+        -	Web scraping: Se extrajeron datos de sitios web relevantes para obtener información sobre el tráfico, la calidad del aire y la contaminación sonora.
+        -	Descarga de archivos: Se descargaron archivos en formato .parquet y .csv de fuentes oficiales y públicas.
+    -	Infraestructura en la nube: Google Cloud Platform (GCP) se utilizó como plataforma central para el almacenamiento y procesamiento de datos proporcionando una base sólida para el manejo de grandes volúmenes de datos.
+        -	Cloud Storage: Se emplearon buckets de Cloud Storage para almacenar los datos recopilados de diferentes fuentes.
+        -	BigQuery: Se utilizó BigQuery como almacén de datos (Data Warehouse) para almacenar y consultar los datos de forma eficiente.
+
+2.	Procesamiento y análisis de datos:
+    -  Python: El lenguaje de programación principal utilizado para el desarrollo de scripts, análisis de datos y creación de modelos de machine learning.
+        -  Beautiful Soup: Biblioteca para extraer datos de sitios web mediante web scraping.
+        -  Pandas: Biblioteca para manipulación y análisis de datos, incluyendo limpieza, transformación y visualización.
+        -  TensorFlow: Biblioteca para el desarrollo y entrenamiento de modelos de machine learning y construcción de modelos de aprendizaje profundo personalizados para tareas que requieren un alto grado de control y flexibilidad.
+	  -  Cloud Functions: Se utilizaron Cloud Functions para automatizar tareas de procesamiento de datos, como la limpieza y transformación de los mismos para luego ser cargados en BigQuery (ETL).
+    -  Cloud Scheduler: Se programaron tareas de extracción y procesamiento de datos de forma periódica utilizando Cloud Scheduler.
+    -  Análisis de datos: Se analizaron las relaciones entre variables como el número de viajes, la calidad del aire, la contaminación sonora y las condiciones climáticas para identificar patrones y tendencias.
+    -  Preprocesamiento: Se limpiaron y transformaron los datos utilizando Pandas, eliminando duplicados, valores nulos y inconsistencias. 
+4.	Visualización y presentación de resultados:
+    -  Streamlit: Se desarrolló una aplicación web con Streamlit para visualizar los resultados del análisis de datos y el modelo de machine learning.
+    -  Power BI: Se creó un dashboard en Power BI para mostrar los indicadores clave de rendimiento (KPIs) y las principales conclusiones del análisis.
+  
+## Modelo de Machine Learning
+
+Se entrenó un modelo de machine learning para predecir el número de viajes en los próximos 7 días. Este modelo se integró en la aplicación web de Streamlit para proporcionar información útil a la empresa de transporte.
+
+## Consideraciones adicionales
+
+Es importante destacar que este análisis se basa en un conjunto de datos limitado y que se requieren estudios más profundos para comprender en detalle la relación entre los viajes en taxi, la calidad del aire y la contaminación sonora. Se recomienda continuar recopilando y analizando datos para mejorar la precisión de los modelos y obtener una visión más completa del impacto del transporte en el medio ambiente.
+
 
 Más detalles en la [documentación de sprint1](Documentación/Documentación_Sprint_1.pdf)
 
