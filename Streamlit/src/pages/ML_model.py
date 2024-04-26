@@ -10,11 +10,6 @@ def main():
     # Inicialización de variables de sesión para almacenar el estado
     if 'predicciones' not in st.session_state:
         st.session_state['predicciones'] = None
-
-    # Cargamos el modelo de ensemble
-
-    
-    # Ruta del archivo tar.gz
     
     # Ruta del archivo ensemble_1_complete.tar.gz
     ensemble_path = os.path.join(os.path.dirname(__file__), '../../data/ensemble_1_sin_lstm.tar.gz')
@@ -47,7 +42,12 @@ def main():
     print('claves del diccionario: ', ensemble_sin_lstm.keys())
 
     ponderacion = ensemble_sin_lstm['ponderacion']
-    #os.remove(model_path)
+    
+    if os.path.exists(model_path):
+        os.remove(model_path)
+        print(f"Archivo {model_path} eliminado correctamente.")
+    else:
+        print(f"Error: Archivo {model_path} no encontrado.")
 
     lstm_model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../data/lstm_model.h5'))
     lstm_model = keras.models.load_model(lstm_model_path)
@@ -56,18 +56,65 @@ def main():
     ensemble['ensemble']['models']['lstm'] = lstm_model
     ensemble = ensemble['ensemble']
 
-    def graficar_predicciones_interactivas(pred, tipo_prediccion):
+    def generar_archivo_excel(pred, tipo_prediccion):
+    # Crear un DataFrame con las predicciones
+        dfs = []
+        for district, preds in pred.items():
+            if tipo_prediccion == 'Ensemble':
+                values = preds['ensemble']
+                df = pd.DataFrame(values, columns=['ensemble'])
+                df.rename(columns={'ensemble': 'Demanda'}, inplace=True)
+            else:
+                df = pd.DataFrame()
+                for model, values in preds.items():
+                    if model != 'ensemble':
+                        df[model] = values
+            df.index = pd.to_datetime(df.index)
+            df.index.name = 'Fecha'
+            df.columns.name = 'Distrito'
+            dfs.append((district, df))
+
+        # Formatear el DataFrame para Excel
+        with pd.ExcelWriter('predicciones.xlsx') as writer:
+            for district, df in dfs:
+                df.to_excel(writer, sheet_name=f'Predicciones_{district}')
+
+        # Leer el contenido del archivo Excel generado
+        with open('predicciones.xlsx', 'rb') as f:
+            contenido = f.read()
+            
+        excel_filename = 'predicciones.xlsx'
+        if os.path.exists(excel_filename):
+            os.remove(excel_filename)
+            print(f"Archivo {excel_filename} eliminado correctamente.")
+
+        return contenido
+
+    def graficar_predicciones_interactivas(pred, tipo_prediccion, generar_excel=False):
         '''
         Grafica las predicciones realizadas por el modelo de ensemble de manera interactiva.
 
         Argumentos:
         - pred (dict): Diccionario que contiene los DataFrames de predicciones para cada distrito.
         - tipo_prediccion (str): Tipo de predicción a mostrar ('Ensemble' o 'Modelos')
+        - generar_excel (bool): Permite al usuario descargar excel con las predicciones. Predeterminado en False.
 
         Descripción detallada:
         La función recibe un diccionario de DataFrames de predicciones para cada distrito y grafica las predicciones realizadas por los modelos LSTM, RandomForest, XGBoost, LightGBM y el ensemble ponderado de manera interactiva.
         Cada gráfico muestra las predicciones de cada modelo por separado y la predicción del ensemble.
         '''
+        if generar_excel:
+            # Generar archivo Excel
+            contenido_excel = generar_archivo_excel(pred, tipo_prediccion)
+
+            # Mostrar el botón de descarga
+            st.download_button(
+                label='Descargar Predicciones',
+                data=contenido_excel,
+                file_name='predicciones.xlsx',
+                mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            )
+
         traces = []  # Lista para almacenar las líneas de cada distrito
 
         # Crear una línea para cada distrito
@@ -141,9 +188,17 @@ def main():
         st.session_state['predicciones'] = predicciones
         # Llamar a la función para graficar las predicciones de manera interactiva
         graficar_predicciones_interactivas(predicciones, tipo_prediccion)
+        contenido_excel = generar_archivo_excel(st.session_state['predicciones'], tipo_prediccion)
+        st.download_button(
+            label='Descargar Predicciones',
+            data=contenido_excel,
+            file_name='predicciones.xlsx',
+            mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
 
     # Verificar si ya existen predicciones antes de mostrar los selectores de fecha y hora
     if st.session_state['predicciones'] is not None:
+
         st.write("### Selecciona un día y una hora para ver la demanda:")
         dia_seleccionado = st.date_input("Selecciona un día:", min_value=pd.to_datetime('today').date(), max_value=pd.to_datetime('today').date() + pd.Timedelta(days=dias_prediccion-1))
         

@@ -2,3 +2,4 @@
 /ML Model/Entrenamiento/ensemble_1_complete.joblib
 /ML Model/Entrenamiento/ensemble_1_sin_lstm.joblib
 /Streamlit/secrets.toml
+/Streamlit/data/ensemble_1_sin_lstm.joblib
