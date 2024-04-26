@@ -4,6 +4,7 @@ import plotly.graph_objs as go
 import os
 import tarfile
 import keras
+from datetime import datetime
 
 def main():
 
@@ -166,10 +167,26 @@ def main():
         Devuelve:
         - demanda (dict): Diccionario que contiene la demanda para cada distrito en el día y hora seleccionados.
         '''
-        datetime_solicitada = str(dia_seleccionado) + ' ' + str(hora_seleccionada) 
+
+        try:
+            datetime_solicitada = datetime.strptime(dia_seleccionado + ' ' + hora_seleccionada, '%Y-%m-%d %H:%M')
+        except ValueError as e:
+            st.error('Formato de fecha y hora inválido. Asegúrate de que esté en el formato "YYYY-MM-DD HH:MM".')
+            raise e
         demanda = {}
+        data_found = False  # Flag para verificar si se encontraron datos
+
         for district, preds in pred.items():
-            demanda[district] = preds.loc[datetime_solicitada, 'ensemble']
+            # Comprobación utilizando datetime en el índice
+            if datetime_solicitada in preds.index:
+                demanda[district] = preds.loc[datetime_solicitada, 'ensemble']
+                data_found = True
+            else:
+                demanda[district] = None  # indica falta de datos
+
+        if not data_found:
+            st.error('No hay datos de demanda para la fecha y hora seleccionados')
+
         return demanda
 
     # Seleccionar el tipo de predicción a mostrar

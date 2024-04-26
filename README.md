@@ -67,12 +67,27 @@ Para abordar este proyecto, se implementó una estrategia basada en la recopilac
     -  [Análisis de datos](EDA/): Se analizaron las relaciones entre variables como el número de viajes, la calidad del aire, la contaminación sonora y las condiciones climáticas para identificar patrones y tendencias.
     -  [Preprocesamiento](EDA/): Se limpiaron y transformaron los datos utilizando Pandas, eliminando duplicados, valores nulos y inconsistencias. 
 4.	Visualización y presentación de resultados:
-    -  [Streamlit](Streamlit/): Se desarrolló una aplicación web con Streamlit para visualizar los resultados del análisis de datos y el modelo de machine learning.
+    -  [Streamlit](Streamlit/): Se desarrolló una aplicación web con Streamlit para visualizar los resultados del análisis de datos y el modelo de machine learning. Puedes acceder a la aplicación [aquí](https://ecotaxisnyc.streamlit.app/).
     -  Power BI: Se creó un [dashboard](Dashboard/) en Power BI para mostrar los indicadores clave de rendimiento (KPIs) y las principales conclusiones del análisis.
   
 ## Modelo de Machine Learning
 
-Se entrenó un modelo de machine learning para predecir el número de viajes en los próximos 7 días. Este modelo se integró en la aplicación web de Streamlit para proporcionar información útil a la empresa de transporte.
+Se desarrolló, entrenó y desplegó en línea un modelo de Machine Learning para predicción de demanda a nivel franja horaria y distrito en la ciudad de Nueva York.<br>
+El modelo es de tipo Weighted Ensemble en el cual se combinan las predicciones de:<br>
+- Red Neuronal Recurrente de tipo LSTM, con dos capas LSTM de 100 y 60 unidades cada una. Una capa de salida Dense de 5 unidades permite que la red neuronal prediga los valores de demanda en cada distrito de la ciudad.
+- Random Forest: cada distrito de NYC tiene su modelo de Random Forest con hiperparámetros optimizados para la demanda de ese distrito.
+- XGBoost: cada distrito de NYC tiene su modelo de XGBoost con hiperparámetros optimizados para la demanda de ese distrito.
+- LightGBM: cada distrito de NYC tiene su modelo de LightGBM con hiperparámetros optimizados para la demanda de ese distrito.
+El ensemble combina las predicciones de los cuatro modelos en una única salida. La combinación es en base a un promedio ponderado de las predicciones de cada modelo, teniendo en cuenta el error RMSE de cada uno en cada distrito. <br>
+El ensemble es entrenado con 2 años de datos, y selecciona automáticamente la ponderación más efectiva.<br>
+A continuación podemos ver la comparación de diferentes predicciones: <br>
+<img src="assets/manhattan_predictions.png" width="800" height="800"> <br>
+En [Streamlit](https://ecotaxisnyc.streamlit.app/) se a desarrollado una aplicación que permite cargar datos en la nube, utilizar el dashboard interactivo en tiempo real y realizar predicciones de demanda: <br>
+<img src="assets/main_streamlit.png" width="800" height="400"> <br>
+<img src="assets/cargar_datos_str.png" width="800" height="400"> <br>
+<img src="assets/dash_str.png" width="800" height="400"> <br>
+<img src="assets/ml_str.png" width="800" height="400"> <br>
+
 
 ## Consideraciones adicionales
 
