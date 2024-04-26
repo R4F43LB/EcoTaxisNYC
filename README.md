@@ -67,7 +67,7 @@ Para abordar este proyecto, se implementó una estrategia basada en la recopilac
     -  [Análisis de datos](EDA/): Se analizaron las relaciones entre variables como el número de viajes, la calidad del aire, la contaminación sonora y las condiciones climáticas para identificar patrones y tendencias.
     -  [Preprocesamiento](EDA/): Se limpiaron y transformaron los datos utilizando Pandas, eliminando duplicados, valores nulos y inconsistencias. 
 4.	Visualización y presentación de resultados:
-    -  [Streamlit](Streamlit/): Se desarrolló una aplicación web con Streamlit para visualizar los resultados del análisis de datos y el modelo de machine learning.
+    -  [Streamlit](Streamlit/): Se desarrolló una aplicación web con Streamlit para visualizar los resultados del análisis de datos y el modelo de machine learning. Puedes acceder a la aplicación [aquí](https://ecotaxisnyc.streamlit.app/).
     -  Power BI: Se creó un [dashboard](Dashboard/) en Power BI para mostrar los indicadores clave de rendimiento (KPIs) y las principales conclusiones del análisis.
   
 ## Modelo de Machine Learning
@@ -82,7 +82,7 @@ El ensemble combina las predicciones de los cuatro modelos en una única salida.
 El ensemble es entrenado con 2 años de datos, y selecciona automáticamente la ponderación más efectiva.<br>
 A continuación podemos ver la comparación de diferentes predicciones: <br>
 <img src="assets/manhattan_predictions.png" width="800" height="800"> <br>
-En Streamlit se a desarrollado una aplicación que permite cargar datos en la nube, utilizar el dashboard interactivo en tiempo real y realizar predicciones de demanda: <br>
+En [Streamlit](https://ecotaxisnyc.streamlit.app/) se a desarrollado una aplicación que permite cargar datos en la nube, utilizar el dashboard interactivo en tiempo real y realizar predicciones de demanda: <br>
 <img src="assets/main_streamlit.png" width="800" height="400"> <br>
 <img src="assets/cargar_datos_str.png" width="800" height="400"> <br>
 <img src="assets/dash_str.png" width="800" height="400"> <br>
