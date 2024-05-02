@@ -13,7 +13,7 @@ def main():
         st.session_state['predicciones'] = None
     
     # Ruta del archivo ensemble_1_complete.tar.gz
-    ensemble_path = os.path.join(os.path.dirname(__file__), '../../data/ensemble_1_sin_lstm.tar.gz')
+    ensemble_path = os.path.join(os.path.dirname(__file__), '../../data/ensemble_2_sin_lstm.tar.gz')
 
     # Verificación de existencia del archivo
     if os.path.exists(ensemble_path):
@@ -21,7 +21,7 @@ def main():
     else:
         print(f"Error: Archivo {ensemble_path} no encontrado en Streamlit Sharing.")
 
-    ensemble_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../data/ensemble_1_sin_lstm.tar.gz'))
+    ensemble_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../data/ensemble_2_sin_lstm.tar.gz'))
     print('Dirección del ensemble: ',ensemble_path)
     # Directorio de extracción
     extracted_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../data/'))
@@ -30,19 +30,17 @@ def main():
     with tarfile.open(ensemble_path, 'r:gz') as tar:
         tar.extractall(path=extracted_dir)
     # Verificación de existencia del archivo extraído
-    extracted_joblib_path = os.path.join(extracted_dir, 'ensemble_1_sin_lstm.joblib')
+    extracted_joblib_path = os.path.join(extracted_dir, 'ensemble_2_sin_lstm.joblib')
     if os.path.exists(extracted_joblib_path):
         print(f"Archivo {extracted_joblib_path} extraído correctamente.")
     else:
         print(f"Error: Archivo {extracted_joblib_path} no encontrado tras la extracción.")
     # Cargar el modelo desde el archivo descomprimido
-    model_path = os.path.join(extracted_dir, 'ensemble_1_sin_lstm.joblib')
+    model_path = os.path.join(extracted_dir, 'ensemble_2_sin_lstm.joblib')
     print(f"Intentando cargar el modelo desde: {model_path}")
     ensemble_sin_lstm = load(model_path)
     print('Archivo cargado ensemble_sin_lstm cargado')
-    print('claves del diccionario: ', ensemble_sin_lstm.keys())
-
-    ponderacion = ensemble_sin_lstm['ponderacion']
+    #print('claves del diccionario: ', ensemble_sin_lstm.keys())
     
     if os.path.exists(model_path):
         os.remove(model_path)
@@ -50,12 +48,28 @@ def main():
     else:
         print(f"Error: Archivo {model_path} no encontrado.")
 
-    lstm_model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../data/lstm_model.h5'))
+    lstm_model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../data/lstm_model_2.h5'))
     lstm_model = keras.models.load_model(lstm_model_path)
-
+    
     ensemble = ensemble_sin_lstm
+    #print(f'claves de ensemble: {ensemble.keys()}')
     ensemble['ensemble']['models']['lstm'] = lstm_model
+    ensemble_errors = ensemble['ensemble_errors']
     ensemble = ensemble['ensemble']
+
+    # Agregar el cartel informativo
+    st.markdown("""
+        <div style="text-align: center;">
+            <h2>Bienvenido al panel de predicción de demanda</h2>
+        </div>
+        """, unsafe_allow_html=True)
+    st.write("### Nota:")
+    st.write("Los datos de hora corresponden a la hora local en NYC.")
+
+    # Agregar el casillero para el umbral de alerta de demanda
+    umbral_alerta_demanda = st.selectbox("Umbral de alerta de demanda (porcentaje sobre la media)", options=[i for i in range(1, 101)] )
+    hist_means_path = os.path.join(os.path.dirname(__file__), '../../data/hist_means.parquet')
+    hist_means = pd.read_parquet(hist_means_path)
 
     def generar_archivo_excel(pred, tipo_prediccion):
     # Crear un DataFrame con las predicciones
@@ -200,12 +214,16 @@ def main():
     # Botón para generar los gráficos
     if st.button("Generar predicciones"):
         # Realizar las predicciones
-        predicciones = predecir(ensemble, cant_dias=dias_prediccion, ponderacion=ponderacion['tipo'], alpha=ponderacion['alpha'])
+        best_preds = obtener_mejores_ponderaciones(ensemble_errors=ensemble_errors)
+        predicciones = predecir(ensemble, cant_dias=dias_prediccion, multiple=True, mejores_pond_por_distrito=best_preds)
         # Actualizar la variable de sesión con las nuevas predicciones
         st.session_state['predicciones'] = predicciones
         # Llamar a la función para graficar las predicciones de manera interactiva
+
         graficar_predicciones_interactivas(predicciones, tipo_prediccion)
+
         contenido_excel = generar_archivo_excel(st.session_state['predicciones'], tipo_prediccion)
+
         st.download_button(
             label='Descargar Predicciones',
             data=contenido_excel,
@@ -213,8 +231,30 @@ def main():
             mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
 
+        alertas_demanda = comparar_con_media(st.session_state['predicciones'], hist_means, umbral=umbral_alerta_demanda)
+        
+        # Mostrar los resultados en una tabla
+        for district, data in alertas_demanda.items():
+            if not data.empty:
+                st.write(f"### Alta demanda en {district}:")
+                st.dataframe(data)
+            else:
+                st.write(f"No hay alta demanda predicha en {district} con el umbral seleccionado.")
     # Verificar si ya existen predicciones antes de mostrar los selectores de fecha y hora
     if st.session_state['predicciones'] is not None:
+
+        #if st.button('Comparar demanda con media histórica'):
+        
+            #alertas_demanda = comparar_con_media(st.session_state['predicciones'], hist_means, umbral=umbral_alerta_demanda)
+        
+            # Mostrar los resultados en una tabla
+            #for district, data in alertas_demanda.items():
+             #   if not data.empty:
+              #      st.write(f"### Alta demanda en {district}:")
+               #     st.dataframe(data)
+                #else:
+                 #   st.write(f"No hay alta demanda predicha en {district} con el umbral seleccionado.")
+
 
         st.write("### Selecciona un día y una hora para ver la demanda:")
         dia_seleccionado = st.date_input("Selecciona un día:", min_value=pd.to_datetime('today').date(), max_value=pd.to_datetime('today').date() + pd.Timedelta(days=dias_prediccion-1))

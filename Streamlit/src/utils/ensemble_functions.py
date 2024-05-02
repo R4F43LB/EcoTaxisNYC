@@ -20,6 +20,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error
 from sklearn.model_selection import GridSearchCV, TimeSeriesSplit
 import xgboost as xgb
 import lightgbm as lgb
+import pytz
 
 np.random.seed(42)
 
@@ -102,8 +103,10 @@ def generar_X(nro_pasos=5, cantidad_dias=7):
 
     df_pred = pd.DataFrame(data = hourly_data)
 
-    hora_actual = datetime.now().time()
-    fecha_actual = datetime.now().date()
+    hora_fecha_actual_NYC = datetime.now(pytz.timezone('America/New_York'))
+    hora_actual = hora_fecha_actual_NYC.time()
+    fecha_actual = hora_fecha_actual_NYC.date()
+    
     hora = hora_actual.hour
     dia = fecha_actual.day
     mes = fecha_actual.month
@@ -118,6 +121,7 @@ def generar_X(nro_pasos=5, cantidad_dias=7):
     df_pred['hora'] = df_pred['date'].dt.hour
     df_pred['dia_semana'] = df_pred['date'].dt.weekday + 1
     us_holidays = holidays.US(years=[anio - 1, anio, anio + 1])
+    us_holidays
     df_pred['holiday'] = np.where(df_pred['fecha'].isin(us_holidays), 1, 0)
     df_pred.drop(columns='fecha', inplace=True)
     df_pred.rename(columns={'date': 'datetime'}, inplace=True)
@@ -130,7 +134,8 @@ def generar_X(nro_pasos=5, cantidad_dias=7):
     
     return df_pred
 
-def predecir(ensemble, cant_dias=7, verbose=0, nro_pasos=5, test=False, test_data=None, ponderacion= 'lineal', alpha=1):
+def predecir(ensemble, cant_dias=7, verbose=0, nro_pasos=5, test=False, test_data=None, ponderacion= 'lin', alpha=1,
+             multiple=False, mejores_pond_por_distrito=None):
     
     '''
     Realiza predicciones utilizando el ensemble de modelos de machine learning.
@@ -142,9 +147,11 @@ def predecir(ensemble, cant_dias=7, verbose=0, nro_pasos=5, test=False, test_dat
     - nro_pasos (int): Número de pasos hacia atrás a considerar para la predicción de cada modelo.
     - test (bool): Indica si se están realizando pruebas (True) o no (False).
     - test_data (DataFrame): DataFrame que contiene los datos de prueba, solo se utiliza si test=True.
-    - ponderacion (str): 'lineal' indica función de ponderación lineal, 'exp' indica función de ponderación exponencial negativa.
-    - alpha (float): indica el valor del factor en el exponente en el caso de ponderación exponencial. posibles valores: [0.1, 0.5, 1, 10, 100]
-
+    - ponderacion (str): 'lin' indica función de ponderación lineal, 'exp' indica función de ponderación exponencial negativa.
+    - alpha (float): indica el valor del factor en el exponente en el caso de ponderación exponencial. posibles valores: [0.001, 0.5, 1, 10, 100]
+    - multiple (bool): indica se se utilizarán distintas ponderaciones para cada distrito. Predeterminado False.
+    - mejor_pond_por_distrito (dict): diccionario conteniendo las mejores funciones de ponderación para cada distrito. Se utiliza sólo en el caso en que multiple=True
+    
     Retorna:
     - nyc_predictions (dict): Diccionario que contiene las predicciones del ensemble para cada distrito.
 
@@ -164,7 +171,7 @@ def predecir(ensemble, cant_dias=7, verbose=0, nro_pasos=5, test=False, test_dat
     columnas_Y = ['Bronx', 'Brooklyn', 'Manhattan', 'Queens', 'Staten Island']
 
     lstm_model = ensemble['models']['lstm']
-    scaler_X = MinMaxScaler()
+    scaler_X = ensemble['lstm_data']['scaler_x']
     scaler_Y = ensemble['lstm_data']['scaler_y']
     X_scaled = scaler_X.fit_transform(X)
     X_reshaped = generador_X_lstm(X_scaled)
@@ -182,6 +189,7 @@ def predecir(ensemble, cant_dias=7, verbose=0, nro_pasos=5, test=False, test_dat
     lgbm_predictions = {}
 
     nyc_predictions = {}
+
     for district in columnas_Y:
 
         lstm_predictions[district] = pd.DataFrame(lstm_predictions_df[district].rename('lstm'))
@@ -201,8 +209,11 @@ def predecir(ensemble, cant_dias=7, verbose=0, nro_pasos=5, test=False, test_dat
         lgbm_pred_df = pd.DataFrame({'lgbm': lgbm_pred}, index=indice_pred)
         lgbm_predictions[district] = lgbm_pred_df
 
-        if ponderacion == 'lineal':
+        if multiple == True:
+            ponderacion = mejores_pond_por_distrito[district][0]
+            alpha = mejores_pond_por_distrito[district][1]
 
+        if ponderacion != 'exp':
             lstm_pond = ponderaciones[district][ponderacion]['lstm']
             rf_pond = ponderaciones[district][ponderacion]['rf']
             xgb_pond = ponderaciones[district][ponderacion]['xgb']
@@ -225,4 +236,78 @@ def predecir(ensemble, cant_dias=7, verbose=0, nro_pasos=5, test=False, test_dat
         nyc_predictions[district] = nyc_predictions[district].astype(int)
         
     return nyc_predictions
+
+def obtener_mejores_ponderaciones(ensemble_errors):
+    '''
+    Obtiene las mejores ponderaciones por distrito basadas en los errores RMSE de cada método de ponderación.
+
+    Argumentos:
+    - ensemble_errors (dict): Diccionario que contiene los errores RMSE de los modelos LSTM, LightGBM, XGBoost, RandomForest y el ensemble ponderado para cada distrito.
+        El diccionario tiene las siguientes claves:
+            - 'lin': Errores RMSE del método de ponderación lineal para cada distrito.
+            - 'inv': Errores RMSE del método de ponderación inversa del error para cada distrito.
+            - 'exp': Errores RMSE del método de ponderación exponencial para cada distrito, organizados por distintos valores de alpha.
+                Ejemplo: ensemble_errors['exp'][0.001]['Bronx'] devuelve el RMSE del distrito Bronx utilizando un alpha de 0.001.
+
+    Retorna:
+    - mejores_pond_por_distrito (dict): Diccionario que contiene las mejores ponderaciones por distrito.
+        Cada clave es un distrito y cada valor es una tupla que indica la mejor ponderación y su correspondiente RMSE.
+        Ejemplo: {'Bronx': ('lin', 10.5), 'Brooklyn': ('inv', 9.8), 'Manhattan': ('exp', 0.01, 8.3)}
+            - Para el caso de ponderación exponencial, la tupla incluye también el valor de alpha.
+    '''
+    mejores_pond_por_distrito = {}
+    alphas = [0.001, 0.01, 0.1, 0.5]
+    districts = ['Bronx', 'Brooklyn', 'Manhattan', 'Queens', 'Staten Island']
+
+    for district in districts:
+        lin_rmse = ensemble_errors['lin'][district]['RMSE']
+        inv_rmse = ensemble_errors['inv'][district]['RMSE']
+        best_exp_rmse = np.inf
+
+        for alpha in alphas:
+            exp_rmse = ensemble_errors['exp'][alpha][district]['RMSE']
+            if exp_rmse < best_exp_rmse:
+                best_exp_rmse = exp_rmse
+                best_alpha = alpha
+        
+        if lin_rmse < best_exp_rmse and lin_rmse < inv_rmse:
+            mejores_pond_por_distrito[district] = ('lin', lin_rmse)
+        elif inv_rmse < best_exp_rmse and inv_rmse < lin_rmse:
+            mejores_pond_por_distrito[district] = ('inv', inv_rmse)
+        else:
+            mejores_pond_por_distrito[district] = ('exp', best_alpha, best_exp_rmse)
+    
+    return mejores_pond_por_distrito
+
+def comparar_con_media(preds, hist_means, umbral=10):
+    '''
+    Compara las predicciones de demanda con la media histórica para ese día de la semana y esa hora. Si supera el umbral asignado, se señala como alta demanda.
+    Argumentos:
+    - preds (dict): Diccionario que contiene para cada distrito, las predicciones de demanda (dataframes con columnas para los modelos y el ensemble).
+    - hist_means (Dataframe): Dataframe de pandas que contiene las medias históricas para cada distrito, por día de la semana y hora.
+    - umbral (int): indica el porcentaje por encima de la media que debe ser superado por la demanda predicha para ser considerado alta demanda.
+
+    Retorna:
+    - alta_demanda (dict): Diccionario que contiene para cada distrito, una serie con los días y horas de alta demanda según el umbral determinado
+    '''
+    distritos = ['Bronx','Brooklyn','Manhattan','Queens','Staten Island']
+    alta_demanda = {}
+
+    for district in distritos:
+        pred_dist = preds[district].reset_index()
+        pred_dist.rename(columns={'Fecha': 'datetime'}, inplace=True)
+        pred_dist['dia_semana'] = pred_dist['datetime'].dt.weekday +1
+        pred_dist['hora'] = pred_dist['datetime'].dt.hour
+        pred_dist.set_index('datetime', inplace=True)
+        pred_dist = pred_dist[['dia_semana', 'hora', 'ensemble']]
+        result = pd.merge(pred_dist, hist_means[['dia_semana', 'hora', district]], how= 'left', on=['dia_semana', 'hora'])
+        result.index = pred_dist.index
+        result['alta_demanda'] = result['ensemble'] > (1+umbral/100)*result[district]
+        result = result[result['alta_demanda']]
+        result[district] = result[district].astype(int)
+        result = result[['ensemble', district, 'alta_demanda']]
+        result.rename(columns={'ensemble': 'Predicción', district: 'Media histórica'}, inplace=True)
+        alta_demanda[district] = result
+    
+    return alta_demanda
     

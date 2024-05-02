@@ -7,7 +7,11 @@ from pages import Cargar_Datos, Dashboard, ML_model
 def cargar_logo():
     # Obtener la ruta absoluta del directorio actual y agregar el nombre del archivo de imagen
     logo_path = os.path.join(os.path.dirname(__file__), "assets/Logo.png")
-    st.image(logo_path, width=200)
+    st.markdown(f"""
+        <div style="display: flex; justify-content: center; align-items: center; height: 20vh;">
+            <img src="{logo_path}" width="200">
+        </div>
+        """, unsafe_allow_html=True)
 
 
 def main():
@@ -15,8 +19,7 @@ def main():
     st.markdown("""
         <div style="display: flex; justify-content: center; align-items: center; height: 10vh;">
             <h1>Proyecto EcoTaxisNYC</h1>
-        </div>
-    """, unsafe_allow_html=True)
+        </div>""", unsafe_allow_html=True)
     
     cargar_logo()
 
