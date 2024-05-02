@@ -31,6 +31,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error
 from sklearn.model_selection import GridSearchCV, TimeSeriesSplit
 import xgboost as xgb
 import lightgbm as lgb
+import pytz
 
 np.random.seed(42)
 
@@ -526,19 +527,25 @@ def generar_ponderaciones(lstm_errors, lgbm_errors, xgb_errors, rf_errors):
 
     Retorna:
     - ponderaciones (dict): Diccionario que contiene las ponderaciones para cada modelo LSTM, LightGBM, XGBoost y RandomForest para cada distrito, donde las claves son los nombres de los distritos y los valores son diccionarios con las ponderaciones de cada modelo.
+    
+    Descripción detallada de los elementos en el diccionario 'ponderaciones':
+    - 'lin': ponderaciones calculadas con la fórmula: pond = 1 - rmse/total_rmse, normalizada dividiendo por la suma de las ponderaciones.
+    - 'exp': ponderaciones calculadas con la fórmula: pond = np.exp(-alpha*rmse), normalizada dividiendo por la suma de las ponderaciones.
+        -subclave 'alpha': contiene las ponderaciones calculadas para distintos valores de alpha: alphas = [0.001, 0.01, 0.1, 0.5]
+    - 'inv': ponderaciones calculadas con la fórmula: pond = 1/rmse, normalizada dividiendo por la suma de las ponderaciones.
     '''
 
     ponderaciones = {}
     distritos = list(lstm_errors.keys())
 
     for dist in distritos:
-
+        
         lstm_rmse = lstm_errors[dist]
         lgbm_rmse = lgbm_errors[dist]['RMSE']
         xgb_rmse = xgb_errors[dist]['RMSE']
         rf_rmse = rf_errors[dist]['RMSE']
         total_rmse = lstm_rmse + lgbm_rmse + xgb_rmse + rf_rmse
-
+        # ponderación lineal
         pond_lstm = 1 - lstm_rmse/total_rmse
         pond_lgbm = 1 - lgbm_rmse/total_rmse
         pond_xgb = 1 - xgb_rmse/total_rmse
@@ -550,13 +557,13 @@ def generar_ponderaciones(lstm_errors, lgbm_errors, xgb_errors, rf_errors):
         pond_rf /= sum_pond
 
         ponderaciones[dist] = {}
-        ponderaciones[dist]['lineal'] = {
+        ponderaciones[dist]['lin'] = {
             'lstm': pond_lstm,
             'lgbm': pond_lgbm,
             'xgb': pond_xgb,
             'rf': pond_rf
         }
-
+        # ponderación exponencial
         ponderaciones[dist]['exp'] = {}
         alphas = [0.001, 0.01, 0.1, 0.5]
         for alpha in alphas:
@@ -577,6 +584,23 @@ def generar_ponderaciones(lstm_errors, lgbm_errors, xgb_errors, rf_errors):
                 'xgb': pond_xgb,
                 'rf': pond_rf
             }
+        # ponderación inversa RMSE
+        pond_lstm = 1/lstm_rmse
+        pond_lgbm = 1/lgbm_rmse
+        pond_xgb = 1/xgb_rmse
+        pond_rf = 1/rf_rmse
+        sum_pond = pond_lstm + pond_lgbm + pond_xgb + pond_rf
+        pond_lstm /= sum_pond
+        pond_lgbm /= sum_pond
+        pond_xgb /= sum_pond
+        pond_rf /= sum_pond
+        ponderaciones[dist]['inv'] = {}
+        ponderaciones[dist]['inv'] = {
+            'lstm': pond_lstm,
+            'lgbm': pond_lgbm,
+            'xgb': pond_xgb,
+            'rf': pond_rf
+        }
         
     return ponderaciones
 
@@ -717,8 +741,10 @@ def generar_X(nro_pasos=5, cantidad_dias=7):
 
     df_pred = pd.DataFrame(data = hourly_data)
 
-    hora_actual = datetime.now().time()
-    fecha_actual = datetime.now().date()
+    hora_fecha_actual_NYC = datetime.now(pytz.timezone('America/New_York'))
+    hora_actual = hora_fecha_actual_NYC.time()
+    fecha_actual = hora_fecha_actual_NYC.date()
+    
     hora = hora_actual.hour
     dia = fecha_actual.day
     mes = fecha_actual.month
@@ -746,7 +772,8 @@ def generar_X(nro_pasos=5, cantidad_dias=7):
     
     return df_pred
 
-def predecir(ensemble, cant_dias=7, verbose=0, nro_pasos=5, test=False, test_data=None, ponderacion= 'lineal', alpha=1):
+def predecir(ensemble, cant_dias=7, verbose=0, nro_pasos=5, test=False, test_data=None, ponderacion= 'lin', alpha=1,
+             multiple=False, mejores_pond_por_distrito=None):
     
     '''
     Realiza predicciones utilizando el ensemble de modelos de machine learning.
@@ -758,9 +785,11 @@ def predecir(ensemble, cant_dias=7, verbose=0, nro_pasos=5, test=False, test_dat
     - nro_pasos (int): Número de pasos hacia atrás a considerar para la predicción de cada modelo.
     - test (bool): Indica si se están realizando pruebas (True) o no (False).
     - test_data (DataFrame): DataFrame que contiene los datos de prueba, solo se utiliza si test=True.
-    - ponderacion (str): 'lineal' indica función de ponderación lineal, 'exp' indica función de ponderación exponencial negativa.
-    - alpha (float): indica el valor del factor en el exponente en el caso de ponderación exponencial. posibles valores: [0.1, 0.5, 1, 10, 100]
-
+    - ponderacion (str): 'lin' indica función de ponderación lineal, 'exp' indica función de ponderación exponencial negativa.
+    - alpha (float): indica el valor del factor en el exponente en el caso de ponderación exponencial. posibles valores: [0.001, 0.5, 1, 10, 100]
+    - multiple (bool): indica se se utilizarán distintas ponderaciones para cada distrito. Predeterminado False.
+    - mejor_pond_por_distrito (dict): diccionario conteniendo las mejores funciones de ponderación para cada distrito. Se utiliza sólo en el caso en que multiple=True
+    
     Retorna:
     - nyc_predictions (dict): Diccionario que contiene las predicciones del ensemble para cada distrito.
 
@@ -780,7 +809,7 @@ def predecir(ensemble, cant_dias=7, verbose=0, nro_pasos=5, test=False, test_dat
     columnas_Y = ['Bronx', 'Brooklyn', 'Manhattan', 'Queens', 'Staten Island']
 
     lstm_model = ensemble['models']['lstm']
-    scaler_X = MinMaxScaler()
+    scaler_X = ensemble['lstm_data']['scaler_x']
     scaler_Y = ensemble['lstm_data']['scaler_y']
     X_scaled = scaler_X.fit_transform(X)
     X_reshaped = generador_X_lstm(X_scaled)
@@ -798,6 +827,7 @@ def predecir(ensemble, cant_dias=7, verbose=0, nro_pasos=5, test=False, test_dat
     lgbm_predictions = {}
 
     nyc_predictions = {}
+
     for district in columnas_Y:
 
         lstm_predictions[district] = pd.DataFrame(lstm_predictions_df[district].rename('lstm'))
@@ -817,8 +847,11 @@ def predecir(ensemble, cant_dias=7, verbose=0, nro_pasos=5, test=False, test_dat
         lgbm_pred_df = pd.DataFrame({'lgbm': lgbm_pred}, index=indice_pred)
         lgbm_predictions[district] = lgbm_pred_df
 
-        if ponderacion == 'lineal':
+        if multiple == True:
+            ponderacion = mejores_pond_por_distrito[district][0]
+            alpha = mejores_pond_por_distrito[district][1]
 
+        if ponderacion != 'exp':
             lstm_pond = ponderaciones[district][ponderacion]['lstm']
             rf_pond = ponderaciones[district][ponderacion]['rf']
             xgb_pond = ponderaciones[district][ponderacion]['xgb']
@@ -841,7 +874,7 @@ def predecir(ensemble, cant_dias=7, verbose=0, nro_pasos=5, test=False, test_dat
         nyc_predictions[district] = nyc_predictions[district].astype(int)
         
     return nyc_predictions
-    
+    #
 def graficar_predicciones(pred):
     
     '''
@@ -909,7 +942,7 @@ def train_test_ensemble(data, verbose=0, test_size=0.2, nro_pasos=5, exportar='s
     
     ensemble_predictions = {}
     ensemble_errors = {}
-    ponderaciones = ['lineal', 'exp']
+    ponderaciones = ['lin', 'exp', 'inv']
     alphas = [0.001, 0.01, 0.1, 0.5]
 
     for ponderacion in ponderaciones:
@@ -917,7 +950,7 @@ def train_test_ensemble(data, verbose=0, test_size=0.2, nro_pasos=5, exportar='s
         ensemble_errors[ponderacion] = {}
         ensemble_predictions[ponderacion] = {}
 
-        if ponderacion == 'lineal':
+        if ponderacion != 'exp':
             if verbose == 1:
                 print('Ponderacion:', ponderacion)
 
@@ -976,15 +1009,20 @@ def train_test_ensemble(data, verbose=0, test_size=0.2, nro_pasos=5, exportar='s
 
                     ensemble_predictions[ponderacion][alpha][district] = predictions_df
     
-    best_nrmse = np.mean([ensemble_errors['lineal'][district]['NRMSE'] for district in columnas_Y])
-    best_pond = 'lineal'
-    best_alpha = 1
+    nrmse_dict = {}
+    lin_nrmse = np.mean([ensemble_errors['lin'][district]['NRMSE'] for district in columnas_Y])
+    nrmse_dict['lin'] = lin_nrmse
+    inv_nrmse = np.mean([ensemble_errors['inv'][district]['NRMSE'] for district in columnas_Y])
+    nrmse_dict['inv'] = inv_nrmse
+    best_nrmse = np.inf
     for alpha in alphas:
         exp_nrmse = np.mean([ensemble_errors['exp'][alpha][district]['NRMSE'] for district in columnas_Y])
         if exp_nrmse < best_nrmse:
             best_nrmse = exp_nrmse
-            best_pond = 'exp'
             best_alpha = alpha
+            nrmse_dict['exp'] = exp_nrmse
+
+    best_pond = min(nrmse_dict, key=nrmse_dict.get)
 
     if (verbose==1):
         print('Finalizado el testeo del ensemble')
@@ -1044,16 +1082,15 @@ def test_ensemble(data, ensemble, verbose=0, test_size=0.2, nro_pasos=5, exporta
     Esta función realiza pruebas del ensemble de modelos de machine learning utilizando un conjunto de datos de prueba. Utiliza la función train_test_ensemble para realizar las pruebas y devuelve el ensemble junto con las predicciones y errores asociados.
 
     Retorna:
-    - ensemble (dict): Diccionario que contiene el ensemble de modelos utilizados en las pruebas.
     - ensemble_predictions (dict): Diccionario que contiene las predicciones del ensemble para cada distrito.
     - ensemble_errors (dict): Diccionario que contiene los errores de predicción del ensemble para cada distrito.
     - ponderacion (dict): Diccionario que contiene la mejor ponderacion de modelos para efectuar predicciones.
     '''
     
-    ensemble, ensemble_predictions, ensemble_errors, ponderacion = train_test_ensemble(data=data, verbose=verbose, test_size=test_size,
+    _, ensemble_predictions, ensemble_errors, ponderacion = train_test_ensemble(data=data, verbose=verbose, test_size=test_size,
                                                                             nro_pasos=nro_pasos, exportar=exportar, file=file, ensemble=ensemble
                                                                             )
-    return ensemble, ensemble_predictions, ensemble_errors, ponderacion
+    return ensemble_predictions, ensemble_errors, ponderacion
 
 def graficar_pred_ensemble(pred, numero_dias=5):
     
@@ -1110,3 +1147,73 @@ def graficar_feature_importances(ensemble):
             feature_importances.nlargest(10).plot(kind='barh')
             plt.title(f'Feature Importances del modelo {model} en el distrito {district} ')
             plt.show()
+
+def obtener_mejores_ponderaciones(ensemble_errors):
+    '''
+    Obtiene las mejores ponderaciones por distrito basadas en los errores RMSE de cada método de ponderación.
+
+    Argumentos:
+    - ensemble_errors (dict): Diccionario que contiene los errores RMSE de los modelos LSTM, LightGBM, XGBoost, RandomForest y el ensemble ponderado para cada distrito.
+        El diccionario tiene las siguientes claves:
+            - 'lin': Errores RMSE del método de ponderación lineal para cada distrito.
+            - 'inv': Errores RMSE del método de ponderación inversa del error para cada distrito.
+            - 'exp': Errores RMSE del método de ponderación exponencial para cada distrito, organizados por distintos valores de alpha.
+                Ejemplo: ensemble_errors['exp'][0.001]['Bronx'] devuelve el RMSE del distrito Bronx utilizando un alpha de 0.001.
+
+    Retorna:
+    - mejores_pond_por_distrito (dict): Diccionario que contiene las mejores ponderaciones por distrito.
+        Cada clave es un distrito y cada valor es una tupla que indica la mejor ponderación y su correspondiente RMSE.
+        Ejemplo: {'Bronx': ('lin', 10.5), 'Brooklyn': ('inv', 9.8), 'Manhattan': ('exp', 0.01, 8.3)}
+            - Para el caso de ponderación exponencial, la tupla incluye también el valor de alpha.
+    '''
+    mejores_pond_por_distrito = {}
+    alphas = [0.001, 0.01, 0.1, 0.5]
+    districts = ['Bronx', 'Brooklyn', 'Manhattan', 'Queens', 'Staten Island']
+
+    for district in districts:
+        lin_rmse = ensemble_errors['lin'][district]['RMSE']
+        inv_rmse = ensemble_errors['inv'][district]['RMSE']
+        best_exp_rmse = np.inf
+
+        for alpha in alphas:
+            exp_rmse = ensemble_errors['exp'][alpha][district]['RMSE']
+            if exp_rmse < best_exp_rmse:
+                best_exp_rmse = exp_rmse
+                best_alpha = alpha
+        
+        if lin_rmse < best_exp_rmse and lin_rmse < inv_rmse:
+            mejores_pond_por_distrito[district] = ('lin', lin_rmse)
+        elif inv_rmse < best_exp_rmse and inv_rmse < lin_rmse:
+            mejores_pond_por_distrito[district] = ('inv', inv_rmse)
+        else:
+            mejores_pond_por_distrito[district] = ('exp', best_alpha, best_exp_rmse)
+    
+    return mejores_pond_por_distrito
+
+def comparar_con_media(preds, hist_means, umbral=10):
+    '''
+    Compara las predicciones de demanda con la media histórica para ese día de la semana y esa hora. Si supera el umbral asignado, se señala como alta demanda.
+    Argumentos:
+    - preds (dict): Diccionario que contiene para cada distrito, las predicciones de demanda (dataframes con columnas para los modelos y el ensemble).
+    - hist_means (Dataframe): Dataframe de pandas que contiene las medias históricas para cada distrito, por día de la semana y hora.
+    - umbral (int): indica el porcentaje por encima de la media que debe ser superado por la demanda predicha para ser considerado alta demanda.
+
+    Retorna:
+    - alta_demanda (dict): Diccionario que contiene para cada distrito, una serie con los días y horas de alta demanda según el umbral determinado
+    '''
+    distritos = ['Bronx','Brooklyn','Manhattan','Queens','Staten Island']
+    alta_demanda = {}
+
+    for district in distritos:
+        pred_dist = preds[district].reset_index()
+        pred_dist['dia_semana'] = pred_dist['datetime'].dt.weekday +1
+        pred_dist['hora'] = pred_dist['datetime'].dt.hour
+        pred_dist.set_index('datetime', inplace=True)
+        pred_dist = pred_dist[['dia_semana', 'hora', 'ensemble']]
+        result = pd.merge(pred_dist, hist_means[['dia_semana', 'hora', district]], how= 'left', on=['dia_semana', 'hora'])
+        result.index = pred_dist.index
+        result['alta_demanda'] = result['ensemble'] > (1+umbral/100)*result[district]
+        result = result[result['alta_demanda']]
+        alta_demanda[district] = result
+    
+    return alta_demanda

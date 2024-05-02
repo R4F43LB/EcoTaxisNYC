@@ -1,5 +1,9 @@
 /ML_Model/Entrenamiento/sturdy-gate-417001-1fe4b0dcfb9d.json
 /ML_Model/Entrenamiento/ensemble_1_complete.joblib
+/ML_Model/Entrenamiento/ensemble_2_complete.joblib
 /ML_Model/Entrenamiento/ensemble_1_sin_lstm.joblib
+/ML_Model/Entrenamiento/ensemble_2_sin_lstm.joblib
+/ML_Model/Entrenamiento/ensemble_2.joblib
 /Streamlit/secrets.toml
 /Streamlit/data/ensemble_1_sin_lstm.joblib
+/Streamlit/data/ensemble_2_sin_lstm.joblib
