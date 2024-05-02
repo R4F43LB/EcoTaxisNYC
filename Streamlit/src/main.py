@@ -4,11 +4,10 @@ import os
 from pages import Cargar_Datos, Dashboard, ML_model
 
 # Función para cargar el logo
-# Función para cargar el logo
 def cargar_logo():
     # Obtener la ruta absoluta del directorio actual y agregar el nombre del archivo de imagen
     logo_path = "Streamlit/src/assets/Logo.png"
-    st.image(logo_path, width=200, caption='Your Caption Here', use_column_width=True)
+    st.image(logo_path, width=200, caption='Proyecto EcoTaxisNYC', use_column_width=True)
 
 
 def main():
