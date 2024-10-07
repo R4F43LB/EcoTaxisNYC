@@ -88,6 +88,8 @@ En [Streamlit](https://ecotaxisnyc.streamlit.app/) se a desarrollado una aplicac
 <img src="assets/dash_str.png" width="800" height="400"> <br>
 <img src="assets/ml_str.png" width="800" height="400"> <br>
 
+## Dashboard
+<img src="Dash.gif" width="1191" height="677"> <br>
 
 ## Consideraciones adicionales
 
